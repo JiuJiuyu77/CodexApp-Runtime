@@ -14,6 +14,18 @@
       "runtime_format": 1,
       "version": "v0.162.1-2"
     },
+    "python": {
+      "archive_sha256": "e1b62924bf6825b9434c0ce27a3f1e634988f14cb86bcd3661c1df93a8d24f3c",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-python-3.13.14-0c470be0363b/PythonRuntime.tar.gz",
+      "download_size": 8957499,
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-python-3.13.14-0c470be0363b/PythonRuntime.bundle.json",
+      "minimum_ios": "15.0",
+      "python_version": "3.13.14",
+      "revision": "0c470be0363b5fc8e6e92ff6e86e07f094377004aae6e2678e491e590b775117",
+      "runtime_format": 3,
+      "unpacked_size": 32746296,
+      "version": "runtime-python-3.13.14-0c470be0363b"
+    },
     "reverse_tools": {
       "archive_sha256": "14df683d2e487c62efc3b00f4fdb496dac24de7bdadd67f1276e31673838f998",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-503e3ace61bd/ReverseToolsRuntime.tar.gz",
@@ -29,11 +41,36 @@
     },
     "theos": {
       "archive_parts": [
-        {"name":"TheosRuntime.tar.gz.part01","sha256":"4bb8eea1c7f82c8a92c108abae2e50f5da8dc3589d0599060a9944a714bf26db","size":50331648,"url":"https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part01"},
-        {"name":"TheosRuntime.tar.gz.part02","sha256":"c4335a8e8248cbdd0f0868574b3f697bd25831693f3838fb7d8bf60952936489","size":50331648,"url":"https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part02"},
-        {"name":"TheosRuntime.tar.gz.part03","sha256":"affd4b0dd336cadca5031a9cc9fc69e0e9071c978ca76c187bd53a0b9a788693","size":50331648,"url":"https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part03"},
-        {"name":"TheosRuntime.tar.gz.part04","sha256":"f70f99a16d1afbc2250166ae8bfe0a00031457c07df227f4ba8680b6b839a194","size":50331648,"url":"https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part04"},
-        {"name":"TheosRuntime.tar.gz.part05","sha256":"38b610860a9855ecb15c0c03362cac97c0a4b1e6f0b5586bd3bca239a0b8a45b","size":23040723,"url":"https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part05"}
+        {
+          "name": "TheosRuntime.tar.gz.part01",
+          "sha256": "4bb8eea1c7f82c8a92c108abae2e50f5da8dc3589d0599060a9944a714bf26db",
+          "size": 50331648,
+          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part01"
+        },
+        {
+          "name": "TheosRuntime.tar.gz.part02",
+          "sha256": "c4335a8e8248cbdd0f0868574b3f697bd25831693f3838fb7d8bf60952936489",
+          "size": 50331648,
+          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part02"
+        },
+        {
+          "name": "TheosRuntime.tar.gz.part03",
+          "sha256": "affd4b0dd336cadca5031a9cc9fc69e0e9071c978ca76c187bd53a0b9a788693",
+          "size": 50331648,
+          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part03"
+        },
+        {
+          "name": "TheosRuntime.tar.gz.part04",
+          "sha256": "f70f99a16d1afbc2250166ae8bfe0a00031457c07df227f4ba8680b6b839a194",
+          "size": 50331648,
+          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part04"
+        },
+        {
+          "name": "TheosRuntime.tar.gz.part05",
+          "sha256": "38b610860a9855ecb15c0c03362cac97c0a4b1e6f0b5586bd3bca239a0b8a45b",
+          "size": 23040723,
+          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part05"
+        }
       ],
       "archive_sha256": "7197fdbee4a6e37c92a467e9f4ac7a214329048247baa4b1799ca5df4faedcc0",
       "download_size": 224367315,
