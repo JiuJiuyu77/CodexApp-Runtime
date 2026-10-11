@@ -65,22 +65,22 @@
       "version": "runtime-core-tools-73a2f18e7cb4"
     },
     "python": {
-      "archive_sha256": "e1b62924bf6825b9434c0ce27a3f1e634988f14cb86bcd3661c1df93a8d24f3c",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-python-3.13.14-0c470be0363b/PythonRuntime.tar.gz",
+      "archive_sha256": "cdabe60150b7de2a80788af4632bba218478798575300eff7437704e8fefd86e",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-python-3.13.14-171bf281b792/PythonRuntime.tar.gz",
       "display_name": "Python",
-      "download_size": 8957499,
+      "download_size": 8957739,
       "group": "tools",
       "handler": "python",
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-python-3.13.14-0c470be0363b/PythonRuntime.bundle.json",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-python-3.13.14-171bf281b792/PythonRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": true,
       "order": 20,
       "python_version": "3.13.14",
-      "revision": "0c470be0363b5fc8e6e92ff6e86e07f094377004aae6e2678e491e590b775117",
+      "revision": "171bf281b79202cfed2dcc1e275e1518d7958019e4a702869b733b6fe3d209e3",
       "runtime_format": 3,
       "summary": "CPython 3.13 iOS Runtime，包含 ssl、sqlite3、hashlib、zlib 等常用模块。",
-      "unpacked_size": 32746296,
-      "version": "runtime-python-3.13.14-0c470be0363b"
+      "unpacked_size": 32746642,
+      "version": "runtime-python-3.13.14-171bf281b792"
     },
     "reverse_tools": {
       "archive_sha256": "14df683d2e487c62efc3b00f4fdb496dac24de7bdadd67f1276e31673838f998",
