@@ -1,0 +1,76 @@
+{
+  "schema": 2,
+  "download_proxy_prefixes": [
+    "https://gh-proxy.org/",
+    "https://ghproxy.net/"
+  ],
+  "runtimes": {
+    "codex": {
+      "version": "v0.162.1-2",
+      "release_tag": "runtime-codex-v0.162.1-2",
+      "asset_name": "wiki.qaq.codex_0.162.1-2_iphoneos-arm64.deb",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-codex-v0.162.1-2/wiki.qaq.codex_0.162.1-2_iphoneos-arm64.deb",
+      "archive_sha256": "89ea3471a0a38c67cf3d81cd3cf8e20c2d0d0b5ab8fef2f44990deb237d24ef6",
+      "download_size": 99623034,
+      "minimum_ios": "15.0",
+      "runtime_format": 1
+    },
+    "reverse_tools": {
+      "archive_sha256": "14df683d2e487c62efc3b00f4fdb496dac24de7bdadd67f1276e31673838f998",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-503e3ace61bd/ReverseToolsRuntime.tar.gz",
+      "download_size": 15627711,
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-503e3ace61bd/ReverseToolsRuntime.bundle.json",
+      "minimum_ios": "15.0",
+      "radare2_ref": "04d73504aabe7b69c3d7af8ea5d0be519fd92321",
+      "radare2_version": "6.2.4",
+      "revision": "503e3ace61bdd5ee6c87423f9941b353647255e961e56d72016ec16224fe4872",
+      "runtime_format": 1,
+      "unpacked_size": 44308480,
+      "version": "runtime-reverse-tools-503e3ace61bd"
+    },
+    "theos": {
+      "archive_parts": [
+        {
+          "name": "TheosRuntime.tar.gz.part01",
+          "sha256": "4bb8eea1c7f82c8a92c108abae2e50f5da8dc3589d0599060a9944a714bf26db",
+          "size": 50331648,
+          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part01"
+        },
+        {
+          "name": "TheosRuntime.tar.gz.part02",
+          "sha256": "c4335a8e8248cbdd0f0868574b3f697bd25831693f3838fb7d8bf60952936489",
+          "size": 50331648,
+          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part02"
+        },
+        {
+          "name": "TheosRuntime.tar.gz.part03",
+          "sha256": "affd4b0dd336cadca5031a9cc9fc69e0e9071c978ca76c187bd53a0b9a788693",
+          "size": 50331648,
+          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part03"
+        },
+        {
+          "name": "TheosRuntime.tar.gz.part04",
+          "sha256": "f70f99a16d1afbc2250166ae8bfe0a00031457c07df227f4ba8680b6b839a194",
+          "size": 50331648,
+          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part04"
+        },
+        {
+          "name": "TheosRuntime.tar.gz.part05",
+          "sha256": "38b610860a9855ecb15c0c03362cac97c0a4b1e6f0b5586bd3bca239a0b8a45b",
+          "size": 23040723,
+          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part05"
+        }
+      ],
+      "archive_sha256": "7197fdbee4a6e37c92a467e9f4ac7a214329048247baa4b1799ca5df4faedcc0",
+      "download_size": 224367315,
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.bundle.json",
+      "revision": "11caeba3c2d05fe6d7259cd4857901cb1d3162d143ab2c451d3dadfb485c83e8",
+      "runtime_format": 11,
+      "sdk": "iPhoneOS16.5.sdk",
+      "sdks_ref": "0222fd5413cf4b9af096f37b4621afa2688572f7",
+      "theos_ref": "dd5c14bb9d91311e221d51b5bfb8c9e5948156db",
+      "unpacked_size": 978698240,
+      "version": "runtime-theos-11caeba3c2d0"
+    }
+  }
+}
