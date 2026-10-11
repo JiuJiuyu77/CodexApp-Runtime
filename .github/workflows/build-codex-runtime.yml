@@ -64,6 +64,8 @@ jobs:
 
           cp Runtime/Codex/0005-ios-native-posix-spawn.patch \
              build/codex-packaging/patches/0005-ios-native-posix-spawn.patch
+          cp Runtime/Codex/0006-ios-poll-native-child-exit.patch \
+             build/codex-packaging/patches/0006-ios-poll-native-child-exit.patch
 
           make -C build/codex-packaging set-version VERSION="$version"
           make -C build/codex-packaging check
@@ -190,7 +192,9 @@ jobs:
           CodexApp iOS runtime package revision v${version}.
 
           OpenAI Codex version: v${base_version}
-          Runtime fix: use Codex's native Apple posix_spawn backend on iOS so unified exec does not fall back to fork/pre_exec on pure TrollStore.
+          Runtime fixes:
+          - use Codex's native Apple posix_spawn backend on iOS so unified exec does not fall back to fork/pre_exec on pure TrollStore;
+          - poll waitpid on iOS when Tokio SIGCHLD delivery is unavailable, so completed commands reach their terminal state and return exit status instead of remaining "running".
           The codex-code-mode-host sidecar is reused byte-for-byte from the verified upstream v${base_version} rootless package and is re-signed by the original packaging pipeline.
           EOF
 
