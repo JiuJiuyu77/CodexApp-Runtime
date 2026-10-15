@@ -21,15 +21,16 @@
       "version": "v0.162.1-3"
     },
     "core_tools": {
-      "archive_sha256": "cffdee7ba3685b4bf4d59e4a87283388c1aad43b71b467f66706a050288a10d7",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-6e3022a33f1f/CoreToolsRuntime.tar.gz",
+      "archive_sha256": "b08d1c27331c12066e3407752848344f640ab3f5cb6d96587cdfe83b2d71029b",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-9e79b7d6c0fa/CoreToolsRuntime.tar.gz",
       "components": {
         "curl": "8.22.0",
         "git": "2.39.1",
+        "jq": "1.8.2",
         "ripgrep": "15.2.0"
       },
       "display_name": "CoreTools",
-      "download_size": 9623785,
+      "download_size": 9907948,
       "group": "tools",
       "handler": "portable-v1",
       "install": {
@@ -48,24 +49,26 @@
           "bin/git",
           "bin/git-remote-http",
           "bin/rg",
-          "bin/curl"
+          "bin/curl",
+          "bin/jq"
         ],
         "sign_paths": [
           "bin/git",
           "bin/git-remote-http",
           "bin/rg",
-          "bin/curl"
+          "bin/curl",
+          "bin/jq"
         ]
       },
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-6e3022a33f1f/CoreToolsRuntime.bundle.json",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-9e79b7d6c0fa/CoreToolsRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": false,
       "order": 5,
-      "revision": "6e3022a33f1f8e7ebfbc2a1bf66fc179f378e1d16a42098046e1258d2f97f19f",
+      "revision": "9e79b7d6c0fa3431c87e18542681af200a16106efc146db47837f325616c5cfa",
       "runtime_format": 1,
-      "summary": "CodexApp 基础开发工具：Git、HTTPS remote helper、ripgrep 与 curl。",
-      "unpacked_size": 22998964,
-      "version": "runtime-core-tools-6e3022a33f1f"
+      "summary": "CodexApp 基础开发工具：Git、HTTPS remote helper、ripgrep、curl 与 jq。",
+      "unpacked_size": 23809871,
+      "version": "runtime-core-tools-9e79b7d6c0fa"
     },
     "python": {
       "archive_sha256": "6c5cd14ad7354cef321ab666c984f5f036317197e63f88589f24d3a705e2996c",
