@@ -75,7 +75,7 @@
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-ollvm-9.0.0-df9b3741ddb1/OLLVMRuntime.tar.gz",
       "display_name": "OLLVM",
       "download_size": 20756453,
-      "group": "compiler",
+      "group": "tools",
       "handler": "portable-v1",
       "install": {
         "environment": {
