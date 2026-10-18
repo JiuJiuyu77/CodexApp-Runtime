@@ -75,7 +75,7 @@
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.tar.gz",
       "display_name": "OLLVM 强加密",
       "download_size": 27615397,
-      "group": "compiler",
+      "group": "tools",
       "handler": "portable-v1",
       "install": {
         "environment": {
