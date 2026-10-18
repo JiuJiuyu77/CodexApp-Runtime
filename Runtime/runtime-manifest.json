@@ -70,6 +70,78 @@
       "unpacked_size": 23809871,
       "version": "runtime-core-tools-9e79b7d6c0fa"
     },
+    "node": {
+      "archive_sha256": "e4cf9ea3e63c07527604f41bda77608adcfbdbd061ad112ff89f8d711672adfa",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-cc053ac9ed5b/NodeRuntime.tar.gz",
+      "components": {
+        "corepack": "0.28.0",
+        "node": "18.20.4",
+        "npm": "10.7.0",
+        "npx": "10.7.0",
+        "pnpm": "via-corepack",
+        "yarn": "via-corepack"
+      },
+      "corepack_version": "0.28.0",
+      "display_name": "Node.js",
+      "download_size": 19074253,
+      "group": "tools",
+      "handler": "portable-v1",
+      "install": {
+        "environment": {
+          "CA_TOOL_NODE_RUNTIME_ROOT": "${RUNTIME_ROOT}"
+        },
+        "path_entries": [
+          "bin"
+        ],
+        "persistent_path_entries": [
+          "Library/Application Support/CodexApp/Node/prefix/bin"
+        ],
+        "probe": {
+          "arguments": [
+            "-e",
+            "const fs=require('fs');const p=require('./lib/node_modules/npm/package.json');const c=require('./lib/node_modules/corepack/package.json');if(p.version!=='10.7.0'||c.version!=='0.28.0')process.exit(43);console.log('codex-node-runtime-ok '+process.version+' npm='+p.version+' corepack='+c.version)"
+          ],
+          "contains": "codex-node-runtime-ok",
+          "executable": "bin/node"
+        },
+        "required_paths": [
+          "bin/node",
+          "bin/npm",
+          "bin/npx",
+          "bin/corepack",
+          "bin/pnpm",
+          "bin/pnpx",
+          "bin/yarn",
+          "bin/yarnpkg",
+          "lib/node_modules/npm/bin/npm-cli.js",
+          "lib/node_modules/npm/bin/npx-cli.js",
+          "lib/node_modules/corepack/dist/corepack.js",
+          "lib/node_modules/corepack/dist/pnpm.js",
+          "lib/node_modules/corepack/dist/yarn.js",
+          "Frameworks/NodeMobile.framework/NodeMobile"
+        ],
+        "sign_paths": [
+          "bin/node",
+          "Frameworks/NodeMobile.framework/NodeMobile"
+        ]
+      },
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-cc053ac9ed5b/NodeRuntime.bundle.json",
+      "minimum_ios": "15.0",
+      "node_version": "18.20.4",
+      "npm_version": "10.7.0",
+      "optional": true,
+      "order": 15,
+      "revision": "cc053ac9ed5bd63b5d43be3593a7aede5e05176e59ac2fa9565f39849d08af3b",
+      "runtime_format": 1,
+      "source_revision": "d9552e0e01ed5bdbe12a31d1ce6c0877a4f39580",
+      "summary": "完整 Node.js/npm 开发环境：npm、npx、Corepack、pnpm、Yarn，并支持持久化全局 CLI。",
+      "ui": {
+        "symbol": "shippingbox.circle.fill",
+        "tint": "green"
+      },
+      "unpacked_size": 75779584,
+      "version": "runtime-node-18.20.4-cc053ac9ed5b"
+    },
     "ollvm": {
       "archive_sha256": "db77403a4290caec4d377d7880ceda5d32b32d7eeaad7b528493ea50214be33d",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.tar.gz",
