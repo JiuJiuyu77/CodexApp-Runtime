@@ -5,20 +5,20 @@
   ],
   "runtimes": {
     "codex": {
-      "archive_sha256": "2540fa4940d359ce8e4ba1e931af6deb156075e5467a5a3af6353795aa725238",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-codex-v0.162.1-3/wiki.qaq.codex_0.162.1-3_iphoneos-arm64.deb",
-      "asset_name": "wiki.qaq.codex_0.162.1-3_iphoneos-arm64.deb",
+      "archive_sha256": "b1ef47cb6e1f0a378409f123f7bb3422b6dcaf3e69164d70709d146ad7f12155",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-codex-v0.162.1-4/wiki.qaq.codex_0.162.1-4_iphoneos-arm64.deb",
+      "asset_name": "wiki.qaq.codex_0.162.1-4_iphoneos-arm64.deb",
       "display_name": "Codex",
-      "download_size": 99627604,
+      "download_size": 99665764,
       "group": "core",
       "handler": "codex",
       "minimum_ios": "15.0",
       "optional": false,
       "order": 10,
-      "release_tag": "runtime-codex-v0.162.1-3",
+      "release_tag": "runtime-codex-v0.162.1-4",
       "runtime_format": 1,
       "summary": "Codex CLI 与 Code Mode Host。",
-      "version": "v0.162.1-3"
+      "version": "v0.162.1-4"
     },
     "core_tools": {
       "archive_sha256": "b08d1c27331c12066e3407752848344f640ab3f5cb6d96587cdfe83b2d71029b",
