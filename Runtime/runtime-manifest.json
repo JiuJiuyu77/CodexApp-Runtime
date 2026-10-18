@@ -71,8 +71,8 @@
       "version": "runtime-core-tools-9e79b7d6c0fa"
     },
     "node": {
-      "archive_sha256": "ef16fa25720630df1b95a7e4018308cadd7935b34d699fb6ecc952e80d7a8474",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-7479af0c25c6/NodeRuntime.tar.gz",
+      "archive_sha256": "a6438ba7d3eae3774b5f99562bb83f795012c2f1b2511a078e2e26373f97659e",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-d7338c017e6e/NodeRuntime.tar.gz",
       "components": {
         "corepack": "0.28.0",
         "node": "18.20.4",
@@ -83,7 +83,7 @@
       },
       "corepack_version": "0.28.0",
       "display_name": "Node.js",
-      "download_size": 19074270,
+      "download_size": 19074654,
       "group": "tools",
       "handler": "portable-v1",
       "install": {
@@ -128,13 +128,13 @@
           "Frameworks/NodeMobile.framework/NodeMobile"
         ]
       },
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-7479af0c25c6/NodeRuntime.bundle.json",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-d7338c017e6e/NodeRuntime.bundle.json",
       "minimum_ios": "15.0",
       "node_version": "18.20.4",
       "npm_version": "10.7.0",
       "optional": true,
       "order": 15,
-      "revision": "7479af0c25c693c8faa5bc4e96e1326b453c3ff6b6176f25f4b3ae092d6b7869",
+      "revision": "d7338c017e6e04102e23989e37f2fcf7f2e6305ae9145954e064bdc4acf2b47c",
       "runtime_format": 1,
       "source_revision": "d9552e0e01ed5bdbe12a31d1ce6c0877a4f39580",
       "summary": "完整 Node.js/npm 开发环境：npm、npx、Corepack、pnpm、Yarn，并支持持久化全局 CLI。",
@@ -143,7 +143,7 @@
         "tint": "green"
       },
       "unpacked_size": 75779584,
-      "version": "runtime-node-18.20.4-7479af0c25c6"
+      "version": "runtime-node-18.20.4-d7338c017e6e"
     },
     "ollvm": {
       "archive_sha256": "db77403a4290caec4d377d7880ceda5d32b32d7eeaad7b528493ea50214be33d",
