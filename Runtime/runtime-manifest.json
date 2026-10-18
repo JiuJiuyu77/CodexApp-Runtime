@@ -73,7 +73,7 @@
     "ollvm": {
       "archive_sha256": "db77403a4290caec4d377d7880ceda5d32b32d7eeaad7b528493ea50214be33d",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.tar.gz",
-      "display_name": "OLLVM 强加密",
+      "display_name": "OLLVM",
       "download_size": 27615397,
       "group": "tools",
       "handler": "portable-v1",
@@ -173,7 +173,7 @@
       "revision": "73e1f37b55e6f59ead79acaa17235dc7304338b5a0cce129e7ba483fda5991e3",
       "runtime_format": 1,
       "source_revision": "1d0430f7d8bbce56c5fc1e96d7ccb3d94e70b97e",
-      "summary": "Arkari LLVM 16 强加密编译器，提供间接分支、间接调用、全局变量、字符串与控制流保护。",
+      "summary": "Arkari LLVM 16 编译器运行环境，提供多种编译期保护选项。",
       "ui": {
         "symbol": "shield.lefthalf.filled",
         "tint": "purple"
