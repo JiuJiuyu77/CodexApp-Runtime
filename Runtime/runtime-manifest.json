@@ -70,6 +70,118 @@
       "unpacked_size": 23809871,
       "version": "runtime-core-tools-9e79b7d6c0fa"
     },
+    "ollvm": {
+      "archive_sha256": "db77403a4290caec4d377d7880ceda5d32b32d7eeaad7b528493ea50214be33d",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.tar.gz",
+      "display_name": "OLLVM 强加密",
+      "download_size": 27615397,
+      "group": "compiler",
+      "handler": "portable-v1",
+      "install": {
+        "environment": {
+          "CA_TOOL_OLLVM_CLANG": "${RUNTIME_ROOT}/bin/clang",
+          "CA_TOOL_OLLVM_RESOURCE_DIR": "${RUNTIME_ROOT}/lib/clang/16",
+          "CA_TOOL_OLLVM_ROOT": "${RUNTIME_ROOT}"
+        },
+        "path_entries": [],
+        "probe": {
+          "arguments": [
+            "--version"
+          ],
+          "contains": "clang version",
+          "executable": "bin/clang"
+        },
+        "required_paths": [
+          "bin/clang",
+          "bin/clang++",
+          "lib/clang/16/include",
+          "OLLVMRuntime.bundle.json",
+          "share/ollvm/device-smoke.sh"
+        ],
+        "sign_paths": [
+          "bin/clang"
+        ]
+      },
+      "llvm_version": "16.0.6",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.bundle.json",
+      "minimum_ios": "15.0",
+      "optional": true,
+      "order": 30,
+      "passes": [
+        {
+          "flags": [
+            "-mllvm",
+            "-irobf",
+            "-mllvm",
+            "--irobf-indbr"
+          ],
+          "id": "indbr",
+          "title": "Indirect Branch"
+        },
+        {
+          "flags": [
+            "-mllvm",
+            "-irobf",
+            "-mllvm",
+            "--irobf-icall"
+          ],
+          "id": "icall",
+          "title": "Indirect Call"
+        },
+        {
+          "flags": [
+            "-mllvm",
+            "-irobf",
+            "-mllvm",
+            "--irobf-indgv"
+          ],
+          "id": "indgv",
+          "title": "Indirect Globals"
+        },
+        {
+          "flags": [
+            "-mllvm",
+            "-irobf",
+            "-mllvm",
+            "--irobf-cse"
+          ],
+          "id": "cse",
+          "title": "C String Encryption"
+        },
+        {
+          "flags": [
+            "-mllvm",
+            "-irobf",
+            "-mllvm",
+            "--irobf-cff"
+          ],
+          "id": "cff",
+          "title": "Control Flow Flattening"
+        }
+      ],
+      "recommended_presets": [
+        {
+          "id": "balanced",
+          "passes": [
+            "indbr",
+            "cse"
+          ],
+          "status": "needs-device-validation",
+          "title": "Balanced"
+        }
+      ],
+      "revision": "73e1f37b55e6f59ead79acaa17235dc7304338b5a0cce129e7ba483fda5991e3",
+      "runtime_format": 1,
+      "source_revision": "1d0430f7d8bbce56c5fc1e96d7ccb3d94e70b97e",
+      "summary": "Arkari LLVM 16 强加密编译器，提供间接分支、间接调用、全局变量、字符串与控制流保护。",
+      "ui": {
+        "symbol": "shield.lefthalf.filled",
+        "tint": "purple"
+      },
+      "unpacked_size": 92179074,
+      "validation_status": "needs-device-validation",
+      "version": "runtime-ollvm-16.0.6-73e1f37b55e6"
+    },
     "python": {
       "archive_sha256": "6c5cd14ad7354cef321ab666c984f5f036317197e63f88589f24d3a705e2996c",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-python-3.13.14-b04613a42bae/PythonRuntime.tar.gz",
