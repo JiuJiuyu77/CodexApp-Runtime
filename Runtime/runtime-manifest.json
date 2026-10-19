@@ -71,10 +71,11 @@
       "version": "runtime-core-tools-9e79b7d6c0fa"
     },
     "node": {
-      "archive_sha256": "6f135bbd1dfd82af21f813985f093a027bc169577d2de29915487104366cab18",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-070c6150d818/NodeRuntime.tar.gz",
+      "archive_sha256": "b89a471029b5cd8256a4a321e76180e6dcf7c137831955cb98a874d47210e2b3",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-f38613c172c3/NodeRuntime.tar.gz",
       "components": {
         "corepack": "0.28.0",
+        "fetch": "minipass-fetch-global",
         "native_addons": "ios-arm64-napi",
         "node": "18.20.4",
         "node-gyp": "10.1.0",
@@ -85,7 +86,7 @@
       },
       "corepack_version": "0.28.0",
       "display_name": "Node.js",
-      "download_size": 20436994,
+      "download_size": 20441948,
       "group": "tools",
       "handler": "portable-v1",
       "install": {
@@ -123,6 +124,7 @@
           "lib/node_modules/corepack/dist/yarn.js",
           "lib/codex/ios-bootstrap.js",
           "lib/codex/native-support.js",
+          "lib/codex/fetch-compat.js",
           "lib/codex/node-gyp-ios.js",
           "devkit/node/include/node/node.h",
           "devkit/node/include/node/node_api.h",
@@ -138,22 +140,22 @@
           "Frameworks/NodeMobile.framework/NodeMobile"
         ]
       },
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-070c6150d818/NodeRuntime.bundle.json",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-f38613c172c3/NodeRuntime.bundle.json",
       "minimum_ios": "15.0",
       "node_version": "18.20.4",
       "npm_version": "10.7.0",
       "optional": true,
       "order": 15,
-      "revision": "070c6150d818cd6d7099fe5f777219b38b08159362da184fcde48f8ab38de292",
+      "revision": "f38613c172c33e4ed56d4cf61640c8f20fb9cfcb4d06de477187c753d0b6a1b6",
       "runtime_format": 1,
       "source_revision": "d9552e0e01ed5bdbe12a31d1ce6c0877a4f39580",
-      "summary": "完整 Node.js/npm 开发环境：npm、npx、Corepack、pnpm、Yarn、child_process 与 iOS arm64 node-gyp/N-API，并支持持久化全局 CLI。",
+      "summary": "完整 Node.js/npm 开发环境：npm、npx、Corepack、pnpm、Yarn、纯 JS global fetch、child_process 与 iOS arm64 node-gyp/N-API，并支持持久化全局 CLI。",
       "ui": {
         "symbol": "shippingbox.circle.fill",
         "tint": "green"
       },
-      "unpacked_size": 83932160,
-      "version": "runtime-node-18.20.4-070c6150d818"
+      "unpacked_size": 83948544,
+      "version": "runtime-node-18.20.4-f38613c172c3"
     },
     "ollvm": {
       "archive_sha256": "db77403a4290caec4d377d7880ceda5d32b32d7eeaad7b528493ea50214be33d",
