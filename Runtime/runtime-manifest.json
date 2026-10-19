@@ -288,23 +288,49 @@
       "version": "runtime-python-3.13.14-b04613a42bae"
     },
     "reverse_tools": {
-      "archive_sha256": "14df683d2e487c62efc3b00f4fdb496dac24de7bdadd67f1276e31673838f998",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-503e3ace61bd/ReverseToolsRuntime.tar.gz",
+      "archive_sha256": "0283d3d8f8e05e437b0b1e62d25b445e07dbdca58f9eb09b7a6d4e5168e496c0",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-5f7ef6d00768/ReverseToolsRuntime.tar.gz",
+      "components": {
+        "go-dwarf": {
+          "version": "v1.0.14"
+        },
+        "go-macho": {
+          "version": "v1.1.292"
+        },
+        "mt-inject-dylib": {
+          "version": "1"
+        },
+        "mt-macho": {
+          "version": "1"
+        },
+        "mt-rev": {
+          "version": "1"
+        },
+        "radare2": {
+          "commit": "04d73504aabe7b69c3d7af8ea5d0be519fd92321",
+          "version": "6.2.4"
+        }
+      },
       "display_name": "ReverseTools",
-      "download_size": 15627711,
+      "download_size": 17344675,
       "group": "tools",
       "handler": "reverse_tools",
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-503e3ace61bd/ReverseToolsRuntime.bundle.json",
+      "ipsw_ref": null,
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-5f7ef6d00768/ReverseToolsRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": true,
       "order": 10,
       "radare2_ref": "04d73504aabe7b69c3d7af8ea5d0be519fd92321",
       "radare2_version": "6.2.4",
-      "revision": "503e3ace61bdd5ee6c87423f9941b353647255e961e56d72016ec16224fe4872",
+      "revision": "5f7ef6d00768b3cb0d2c44dcd32095ef99fbea0b5f6540af4644590667beb925",
       "runtime_format": 1,
-      "summary": "radare2 / rabin2 / rasm2 / radiff2 / rahash2 逆向工具组。",
-      "unpacked_size": 44308480,
-      "version": "runtime-reverse-tools-503e3ace61bd"
+      "summary": "radare2 工具组 + mt-macho ObjC/Swift 元数据解析 + mt-rev 编排 + Mach-O dylib 注入。",
+      "ui": {
+        "symbol": "wrench.and.screwdriver.fill",
+        "tint": "purple"
+      },
+      "unpacked_size": 48742400,
+      "version": "runtime-reverse-tools-5f7ef6d00768"
     },
     "theos": {
       "archive_parts": [
