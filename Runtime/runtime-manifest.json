@@ -71,8 +71,8 @@
       "version": "runtime-core-tools-9e79b7d6c0fa"
     },
     "node": {
-      "archive_sha256": "ff7c1cc5e4d8a6798a7a9139863acc2d8efdb6e8d949289d85bf26e9b72cecd7",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-94d74946fd13/NodeRuntime.tar.gz",
+      "archive_sha256": "6f135bbd1dfd82af21f813985f093a027bc169577d2de29915487104366cab18",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-070c6150d818/NodeRuntime.tar.gz",
       "components": {
         "corepack": "0.28.0",
         "native_addons": "ios-arm64-napi",
@@ -85,7 +85,7 @@
       },
       "corepack_version": "0.28.0",
       "display_name": "Node.js",
-      "download_size": 20436403,
+      "download_size": 20436994,
       "group": "tools",
       "handler": "portable-v1",
       "install": {
@@ -138,13 +138,13 @@
           "Frameworks/NodeMobile.framework/NodeMobile"
         ]
       },
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-94d74946fd13/NodeRuntime.bundle.json",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-070c6150d818/NodeRuntime.bundle.json",
       "minimum_ios": "15.0",
       "node_version": "18.20.4",
       "npm_version": "10.7.0",
       "optional": true,
       "order": 15,
-      "revision": "94d74946fd13d277be7c872d58e2dc7217df793db4095146352a8d8105e7c999",
+      "revision": "070c6150d818cd6d7099fe5f777219b38b08159362da184fcde48f8ab38de292",
       "runtime_format": 1,
       "source_revision": "d9552e0e01ed5bdbe12a31d1ce6c0877a4f39580",
       "summary": "完整 Node.js/npm 开发环境：npm、npx、Corepack、pnpm、Yarn、child_process 与 iOS arm64 node-gyp/N-API，并支持持久化全局 CLI。",
@@ -152,8 +152,8 @@
         "symbol": "shippingbox.circle.fill",
         "tint": "green"
       },
-      "unpacked_size": 83930112,
-      "version": "runtime-node-18.20.4-94d74946fd13"
+      "unpacked_size": 83932160,
+      "version": "runtime-node-18.20.4-070c6150d818"
     },
     "ollvm": {
       "archive_sha256": "db77403a4290caec4d377d7880ceda5d32b32d7eeaad7b528493ea50214be33d",
