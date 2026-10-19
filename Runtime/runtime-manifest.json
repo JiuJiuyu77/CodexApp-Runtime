@@ -288,8 +288,8 @@
       "version": "runtime-python-3.13.14-b04613a42bae"
     },
     "reverse_tools": {
-      "archive_sha256": "0283d3d8f8e05e437b0b1e62d25b445e07dbdca58f9eb09b7a6d4e5168e496c0",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-5f7ef6d00768/ReverseToolsRuntime.tar.gz",
+      "archive_sha256": "22e430add8197c83d15b448f77c1584848e2e63f0d8782db6851db909ae4fe49",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-840486d88bfe/ReverseToolsRuntime.tar.gz",
       "components": {
         "go-dwarf": {
           "version": "v1.0.14"
@@ -301,10 +301,10 @@
           "version": "1"
         },
         "mt-macho": {
-          "version": "1"
+          "version": "2"
         },
         "mt-rev": {
-          "version": "1"
+          "version": "2"
         },
         "radare2": {
           "commit": "04d73504aabe7b69c3d7af8ea5d0be519fd92321",
@@ -312,25 +312,25 @@
         }
       },
       "display_name": "ReverseTools",
-      "download_size": 17344675,
+      "download_size": 17375243,
       "group": "tools",
       "handler": "reverse_tools",
       "ipsw_ref": null,
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-5f7ef6d00768/ReverseToolsRuntime.bundle.json",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-840486d88bfe/ReverseToolsRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": true,
       "order": 10,
       "radare2_ref": "04d73504aabe7b69c3d7af8ea5d0be519fd92321",
       "radare2_version": "6.2.4",
-      "revision": "5f7ef6d00768b3cb0d2c44dcd32095ef99fbea0b5f6540af4644590667beb925",
+      "revision": "840486d88bfe5001344e22873cd61eac2eb5ce14cc974c4637de19818b06fbfc",
       "runtime_format": 1,
-      "summary": "radare2 工具组 + mt-macho ObjC/Swift 元数据解析 + mt-rev 编排 + Mach-O dylib 注入。",
+      "summary": "radare2 工具组 + mt-macho ObjC/Swift/Code Signature/chained-fixups 深度解析 + mt-rev 编排 + Mach-O dylib 注入。",
       "ui": {
         "symbol": "wrench.and.screwdriver.fill",
         "tint": "purple"
       },
-      "unpacked_size": 48742400,
-      "version": "runtime-reverse-tools-5f7ef6d00768"
+      "unpacked_size": 48865280,
+      "version": "runtime-reverse-tools-840486d88bfe"
     },
     "theos": {
       "archive_parts": [
