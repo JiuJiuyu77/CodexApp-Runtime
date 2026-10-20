@@ -6,7 +6,7 @@
   "runtimes": {
     "build_tools": {
       "archive_sha256": "8e48719bafeafdab712d9d261e549b63e30443f5d0e43d839df17088d407ac14",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-build-tools-3.27.9-329bc357d8e3/BuildToolsRuntime.tar.gz",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-build-tools-3.27.9-a7141408c23f/BuildToolsRuntime.tar.gz",
       "capabilities": {
         "build.cmake": {
           "summary": "Configure and generate C/C++ build trees with CMake 3.27.9.",
@@ -60,7 +60,7 @@
           "bin/ninja"
         ]
       },
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-build-tools-3.27.9-329bc357d8e3/BuildToolsRuntime.bundle.json",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-build-tools-3.27.9-a7141408c23f/BuildToolsRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": true,
       "order": 15,
@@ -77,15 +77,15 @@
         }
       ],
       "requires": [],
-      "revision": "329bc357d8e34476aaa399c0138954da7e7877b7272d46874a2a1061cec57496",
+      "revision": "a7141408c23fbb149dc5eb480a55683c674f53b52d90ae9fbfc36da4c4023204",
       "runtime_format": 1,
       "summary": "CMake + Ninja 原生构建工具，面向 iOS 15+ arm64，纯 TrollStore 与越狱环境均可安装。",
       "ui": {
         "symbol": "hammer.circle.fill",
         "tint": "cyan"
       },
-      "unpacked_size": 25860730,
-      "version": "runtime-build-tools-3.27.9-329bc357d8e3"
+      "unpacked_size": 28661248,
+      "version": "runtime-build-tools-3.27.9-a7141408c23f"
     },
     "codex": {
       "archive_sha256": "b1ef47cb6e1f0a378409f123f7bb3422b6dcaf3e69164d70709d146ad7f12155",
