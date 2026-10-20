@@ -18,19 +18,24 @@
       "release_tag": "runtime-codex-v0.162.1-4",
       "runtime_format": 1,
       "summary": "Codex CLI 与 Code Mode Host。",
+      "ui": {
+        "symbol": "terminal.fill",
+        "tint": "blue"
+      },
       "version": "v0.162.1-4"
     },
     "core_tools": {
-      "archive_sha256": "b08d1c27331c12066e3407752848344f640ab3f5cb6d96587cdfe83b2d71029b",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-9e79b7d6c0fa/CoreToolsRuntime.tar.gz",
+      "archive_sha256": "80f9fd75858122644e1d15b8d65068604dafb5875c33c3b72e4ea915895dde98",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-d16eac405af9/CoreToolsRuntime.tar.gz",
       "components": {
+        "ca-coretools": "2.0",
         "curl": "8.22.0",
         "git": "2.39.1",
         "jq": "1.8.2",
         "ripgrep": "15.2.0"
       },
       "display_name": "CoreTools",
-      "download_size": 9907948,
+      "download_size": 9921540,
       "group": "tools",
       "handler": "portable-v1",
       "install": {
@@ -50,25 +55,36 @@
           "bin/git-remote-http",
           "bin/rg",
           "bin/curl",
-          "bin/jq"
+          "bin/jq",
+          "bin/ca-coretools",
+          "bin/file",
+          "bin/diff",
+          "bin/patch",
+          "bin/zip",
+          "bin/unzip"
         ],
         "sign_paths": [
           "bin/git",
           "bin/git-remote-http",
           "bin/rg",
           "bin/curl",
-          "bin/jq"
+          "bin/jq",
+          "bin/ca-coretools"
         ]
       },
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-9e79b7d6c0fa/CoreToolsRuntime.bundle.json",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-d16eac405af9/CoreToolsRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": false,
       "order": 5,
-      "revision": "9e79b7d6c0fa3431c87e18542681af200a16106efc146db47837f325616c5cfa",
+      "revision": "d16eac405af9a33944020144909c84109c7142b00192e0d139f8cd8e9cdcc600",
       "runtime_format": 1,
-      "summary": "CodexApp 基础开发工具：Git、HTTPS remote helper、ripgrep、curl 与 jq。",
-      "unpacked_size": 23809871,
-      "version": "runtime-core-tools-9e79b7d6c0fa"
+      "summary": "CodexApp 基础开发工具：Git、HTTPS remote helper、ripgrep、curl、jq，以及 file/diff/patch/zip/unzip。",
+      "ui": {
+        "symbol": "shippingbox.fill",
+        "tint": "teal"
+      },
+      "unpacked_size": 23899865,
+      "version": "runtime-core-tools-d16eac405af9"
     },
     "node": {
       "archive_sha256": "b89a471029b5cd8256a4a321e76180e6dcf7c137831955cb98a874d47210e2b3",
@@ -284,6 +300,10 @@
       "revision": "b04613a42bae16f2c564e529b004342443fa0b2d7456b1a024224eb6a84bec71",
       "runtime_format": 3,
       "summary": "CPython 3.13 iOS Runtime，包含 ssl、sqlite3、hashlib、zlib 等常用模块。",
+      "ui": {
+        "symbol": "chevron.left.forwardslash.chevron.right",
+        "tint": "indigo"
+      },
       "unpacked_size": 32746722,
       "version": "runtime-python-3.13.14-b04613a42bae"
     },
@@ -334,6 +354,7 @@
     },
     "theos": {
       "archive_sha256": "f43509589e98549670b21a9b078bd2a541531d327ab954eb8b1915a12042ce3d",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-336408a626ac/TheosRuntime.tar.gz",
       "display_name": "Theos",
       "download_size": 224552345,
       "group": "compiler",
@@ -360,8 +381,7 @@
         "tint": "orange"
       },
       "unpacked_size": 979927040,
-      "version": "runtime-theos-336408a626ac",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-336408a626ac/TheosRuntime.tar.gz"
+      "version": "runtime-theos-336408a626ac"
     }
   },
   "schema": 3,
