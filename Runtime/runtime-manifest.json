@@ -35,7 +35,7 @@
       "conflicts": [],
       "display_name": "BuildTools",
       "download_size": 7510020,
-      "group": "compiler",
+      "group": "tools",
       "handler": "portable-v1",
       "install": {
         "environment": {},
