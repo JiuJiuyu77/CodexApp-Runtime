@@ -8,6 +8,21 @@
       "archive_sha256": "b1ef47cb6e1f0a378409f123f7bb3422b6dcaf3e69164d70709d146ad7f12155",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-codex-v0.162.1-4/wiki.qaq.codex_0.162.1-4_iphoneos-arm64.deb",
       "asset_name": "wiki.qaq.codex_0.162.1-4_iphoneos-arm64.deb",
+      "capabilities": {
+        "codex.app-server": {
+          "summary": "Persistent command/event transport used by chat and tool execution.",
+          "title": "App Server"
+        },
+        "codex.cli": {
+          "summary": "Primary local Codex command runtime.",
+          "title": "Codex CLI"
+        },
+        "codex.code-mode": {
+          "summary": "Local Code Mode host runtime.",
+          "title": "Code Mode Host"
+        }
+      },
+      "conflicts": [],
       "display_name": "Codex",
       "download_size": 99665764,
       "group": "core",
@@ -15,7 +30,20 @@
       "minimum_ios": "15.0",
       "optional": false,
       "order": 10,
+      "provides": [
+        "codex.cli",
+        "codex.app-server",
+        "codex.code-mode"
+      ],
+      "recommends": [
+        {
+          "id": "core_tools",
+          "provides": "core.git",
+          "reason": "Repository workflows benefit from managed Git/search/http tools."
+        }
+      ],
       "release_tag": "runtime-codex-v0.162.1-4",
+      "requires": [],
       "runtime_format": 1,
       "summary": "Codex CLI 与 Code Mode Host。",
       "ui": {
@@ -27,6 +55,40 @@
     "core_tools": {
       "archive_sha256": "80f9fd75858122644e1d15b8d65068604dafb5875c33c3b72e4ea915895dde98",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-d16eac405af9/CoreToolsRuntime.tar.gz",
+      "capabilities": {
+        "core.archive": {
+          "summary": "zip/unzip creation, listing and extraction.",
+          "title": "ZIP archive"
+        },
+        "core.diff": {
+          "summary": "Unified text diff.",
+          "title": "Diff"
+        },
+        "core.file": {
+          "summary": "file-style local file type inspection.",
+          "title": "File inspection"
+        },
+        "core.git": {
+          "summary": "Local Git plus HTTPS remote helper.",
+          "title": "Git"
+        },
+        "core.http": {
+          "summary": "curl-based HTTP/HTTPS client.",
+          "title": "HTTP"
+        },
+        "core.json": {
+          "summary": "jq JSON processing.",
+          "title": "JSON"
+        },
+        "core.patch": {
+          "summary": "Apply common unified diff patches.",
+          "title": "Patch"
+        },
+        "core.search": {
+          "summary": "ripgrep-based fast text search.",
+          "title": "Search"
+        }
+      },
       "components": {
         "ca-coretools": "2.0",
         "curl": "8.22.0",
@@ -34,6 +96,7 @@
         "jq": "1.8.2",
         "ripgrep": "15.2.0"
       },
+      "conflicts": [],
       "display_name": "CoreTools",
       "download_size": 9921540,
       "group": "tools",
@@ -76,6 +139,18 @@
       "minimum_ios": "15.0",
       "optional": false,
       "order": 5,
+      "provides": [
+        "core.git",
+        "core.search",
+        "core.http",
+        "core.json",
+        "core.file",
+        "core.diff",
+        "core.patch",
+        "core.archive"
+      ],
+      "recommends": [],
+      "requires": [],
       "revision": "d16eac405af9a33944020144909c84109c7142b00192e0d139f8cd8e9cdcc600",
       "runtime_format": 1,
       "summary": "CodexApp 基础开发工具：Git、HTTPS remote helper、ripgrep、curl、jq，以及 file/diff/patch/zip/unzip。",
@@ -89,6 +164,35 @@
     "node": {
       "archive_sha256": "b89a471029b5cd8256a4a321e76180e6dcf7c137831955cb98a874d47210e2b3",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-f38613c172c3/NodeRuntime.tar.gz",
+      "capabilities": {
+        "node.fetch": {
+          "summary": "iOS-compatible global fetch path.",
+          "title": "Node fetch"
+        },
+        "node.javascript": {
+          "summary": "Node.js 18 JavaScript runtime.",
+          "title": "Node.js JavaScript"
+        },
+        "node.native-addon": {
+          "requires": [
+            {
+              "id": "theos",
+              "provides": "ios.toolchain",
+              "reason": "Native addon compilation needs the iOS SDK, clang/linker and signing toolchain."
+            }
+          ],
+          "summary": "Compile, sign and load iOS arm64 native Node addons.",
+          "title": "node-gyp / N-API"
+        },
+        "node.packages": {
+          "summary": "npm, npx, Corepack, pnpm and Yarn package workflows.",
+          "title": "npm / Corepack"
+        },
+        "node.process": {
+          "summary": "CodexApp-adapted child process execution.",
+          "title": "child_process"
+        }
+      },
       "components": {
         "corepack": "0.28.0",
         "fetch": "minipass-fetch-global",
@@ -100,6 +204,7 @@
         "pnpm": "via-corepack",
         "yarn": "via-corepack"
       },
+      "conflicts": [],
       "corepack_version": "0.28.0",
       "display_name": "Node.js",
       "download_size": 20441948,
@@ -162,6 +267,21 @@
       "npm_version": "10.7.0",
       "optional": true,
       "order": 15,
+      "provides": [
+        "node.javascript",
+        "node.packages",
+        "node.fetch",
+        "node.process",
+        "node.native-addon"
+      ],
+      "recommends": [
+        {
+          "id": "theos",
+          "provides": "ios.toolchain",
+          "reason": "Theos enables node-gyp/N-API native addon compilation and signing."
+        }
+      ],
+      "requires": [],
       "revision": "f38613c172c33e4ed56d4cf61640c8f20fb9cfcb4d06de477187c753d0b6a1b6",
       "runtime_format": 1,
       "source_revision": "d9552e0e01ed5bdbe12a31d1ce6c0877a4f39580",
@@ -176,6 +296,28 @@
     "ollvm": {
       "archive_sha256": "db77403a4290caec4d377d7880ceda5d32b32d7eeaad7b528493ea50214be33d",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.tar.gz",
+      "capabilities": {
+        "compiler.ollvm.frontend": {
+          "summary": "Arkari LLVM 16 clang/clang++ frontend.",
+          "title": "OLLVM frontend"
+        },
+        "compiler.ollvm.ios-artifact": {
+          "requires": [
+            {
+              "id": "theos",
+              "provides": "ios.link",
+              "reason": "Final iOS linking requires Theos SDK/linker/signing environment."
+            }
+          ],
+          "summary": "Protected compilation followed by the established iOS link/package path.",
+          "title": "OLLVM iOS artifact build"
+        },
+        "compiler.ollvm.obfuscation": {
+          "summary": "Indirect branch/call/global, string encryption and control-flow protection passes.",
+          "title": "OLLVM protection passes"
+        }
+      },
+      "conflicts": [],
       "display_name": "OLLVM",
       "download_size": 27615397,
       "group": "tools",
@@ -262,6 +404,11 @@
           "title": "Control Flow Flattening"
         }
       ],
+      "provides": [
+        "compiler.ollvm.frontend",
+        "compiler.ollvm.obfuscation",
+        "compiler.ollvm.ios-artifact"
+      ],
       "recommended_presets": [
         {
           "id": "balanced",
@@ -273,6 +420,14 @@
           "title": "Balanced"
         }
       ],
+      "recommends": [
+        {
+          "id": "theos",
+          "provides": "ios.link",
+          "reason": "Final iOS artifact linking stays on the established Theos toolchain."
+        }
+      ],
+      "requires": [],
       "revision": "73e1f37b55e6f59ead79acaa17235dc7304338b5a0cce129e7ba483fda5991e3",
       "runtime_format": 1,
       "source_revision": "1d0430f7d8bbce56c5fc1e96d7ccb3d94e70b97e",
@@ -288,6 +443,17 @@
     "python": {
       "archive_sha256": "6c5cd14ad7354cef321ab666c984f5f036317197e63f88589f24d3a705e2996c",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-python-3.13.14-b04613a42bae/PythonRuntime.tar.gz",
+      "capabilities": {
+        "python.runtime": {
+          "summary": "Managed CPython 3.13 runtime.",
+          "title": "Python 3"
+        },
+        "python.stdlib": {
+          "summary": "ssl, sqlite3, hashlib, zlib and common standard-library modules.",
+          "title": "Python standard modules"
+        }
+      },
+      "conflicts": [],
       "display_name": "Python",
       "download_size": 8957861,
       "group": "tools",
@@ -296,7 +462,13 @@
       "minimum_ios": "15.0",
       "optional": true,
       "order": 20,
+      "provides": [
+        "python.runtime",
+        "python.stdlib"
+      ],
       "python_version": "3.13.14",
+      "recommends": [],
+      "requires": [],
       "revision": "b04613a42bae16f2c564e529b004342443fa0b2d7456b1a024224eb6a84bec71",
       "runtime_format": 3,
       "summary": "CPython 3.13 iOS Runtime，包含 ssl、sqlite3、hashlib、zlib 等常用模块。",
@@ -310,6 +482,20 @@
     "reverse_tools": {
       "archive_sha256": "22e430add8197c83d15b448f77c1584848e2e63f0d8782db6851db909ae4fe49",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-840486d88bfe/ReverseToolsRuntime.tar.gz",
+      "capabilities": {
+        "reverse.inject": {
+          "summary": "Add a dylib load command to supported Mach-O files before re-signing.",
+          "title": "Mach-O dylib injection"
+        },
+        "reverse.macho": {
+          "summary": "mt-macho/mt-rev Objective-C, Swift, signatures, fixups, symbols and load commands.",
+          "title": "Mach-O analysis"
+        },
+        "reverse.radare2": {
+          "summary": "r2/rabin2/rasm2/radiff2/rahash2 analysis tools.",
+          "title": "radare2 toolset"
+        }
+      },
       "components": {
         "go-dwarf": {
           "version": "v1.0.14"
@@ -331,6 +517,7 @@
           "version": "6.2.4"
         }
       },
+      "conflicts": [],
       "display_name": "ReverseTools",
       "download_size": 17375243,
       "group": "tools",
@@ -340,8 +527,15 @@
       "minimum_ios": "15.0",
       "optional": true,
       "order": 10,
+      "provides": [
+        "reverse.radare2",
+        "reverse.macho",
+        "reverse.inject"
+      ],
       "radare2_ref": "04d73504aabe7b69c3d7af8ea5d0be519fd92321",
       "radare2_version": "6.2.4",
+      "recommends": [],
+      "requires": [],
       "revision": "840486d88bfe5001344e22873cd61eac2eb5ce14cc974c4637de19818b06fbfc",
       "runtime_format": 1,
       "summary": "radare2 工具组 + mt-macho ObjC/Swift/Code Signature/chained-fixups 深度解析 + mt-rev 编排 + Mach-O dylib 注入。",
@@ -355,6 +549,38 @@
     "theos": {
       "archive_sha256": "f43509589e98549670b21a9b078bd2a541531d327ab954eb8b1915a12042ce3d",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-336408a626ac/TheosRuntime.tar.gz",
+      "capabilities": {
+        "ios.compile": {
+          "summary": "Compile C/C++/Objective-C sources against the bundled iPhoneOS SDK.",
+          "title": "iOS compile"
+        },
+        "ios.link": {
+          "summary": "Link Mach-O artifacts and sign them with the managed toolchain.",
+          "title": "iOS link/sign"
+        },
+        "ios.package": {
+          "summary": "Build Debian packages with Theos packaging tools.",
+          "title": "DEB packaging"
+        },
+        "ios.package.rootful": {
+          "summary": "Default/rootful Theos package scheme.",
+          "title": "Rootful package"
+        },
+        "ios.package.roothide": {
+          "min_version": "runtime-theos-336408a626ac",
+          "summary": "THEOS_PACKAGE_SCHEME=roothide target with RootHide overlay support.",
+          "title": "RootHide package"
+        },
+        "ios.package.rootless": {
+          "summary": "THEOS_PACKAGE_SCHEME=rootless target.",
+          "title": "Rootless package"
+        },
+        "ios.toolchain": {
+          "summary": "clang/clang++, SDK, make, linker, ldid and packaging tools.",
+          "title": "iOS toolchain"
+        }
+      },
+      "conflicts": [],
       "display_name": "Theos",
       "download_size": 224552345,
       "group": "compiler",
@@ -367,6 +593,17 @@
         "rootless",
         "roothide"
       ],
+      "provides": [
+        "ios.toolchain",
+        "ios.compile",
+        "ios.link",
+        "ios.package",
+        "ios.package.rootful",
+        "ios.package.rootless",
+        "ios.package.roothide"
+      ],
+      "recommends": [],
+      "requires": [],
       "revision": "336408a626ac18b90dada3f030c661d8c14928f4e0374411b21f8a000a411454",
       "roothide_headers_ref": "ac1c4fd21214548d6d308fcb835d30df1e43953d",
       "roothide_lib_ref": "85e9b5b8aff11bbefc59525c64c8f55149926e56",
@@ -384,7 +621,7 @@
       "version": "runtime-theos-336408a626ac"
     }
   },
-  "schema": 3,
+  "schema": 4,
   "source_format": 1,
   "source_name": "CodexApp Runtime Source"
 }
