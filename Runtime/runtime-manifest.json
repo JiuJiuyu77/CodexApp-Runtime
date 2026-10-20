@@ -333,54 +333,35 @@
       "version": "runtime-reverse-tools-840486d88bfe"
     },
     "theos": {
-      "archive_parts": [
-        {
-          "name": "TheosRuntime.tar.gz.part01",
-          "sha256": "4bb8eea1c7f82c8a92c108abae2e50f5da8dc3589d0599060a9944a714bf26db",
-          "size": 50331648,
-          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part01"
-        },
-        {
-          "name": "TheosRuntime.tar.gz.part02",
-          "sha256": "c4335a8e8248cbdd0f0868574b3f697bd25831693f3838fb7d8bf60952936489",
-          "size": 50331648,
-          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part02"
-        },
-        {
-          "name": "TheosRuntime.tar.gz.part03",
-          "sha256": "affd4b0dd336cadca5031a9cc9fc69e0e9071c978ca76c187bd53a0b9a788693",
-          "size": 50331648,
-          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part03"
-        },
-        {
-          "name": "TheosRuntime.tar.gz.part04",
-          "sha256": "f70f99a16d1afbc2250166ae8bfe0a00031457c07df227f4ba8680b6b839a194",
-          "size": 50331648,
-          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part04"
-        },
-        {
-          "name": "TheosRuntime.tar.gz.part05",
-          "sha256": "38b610860a9855ecb15c0c03362cac97c0a4b1e6f0b5586bd3bca239a0b8a45b",
-          "size": 23040723,
-          "url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.tar.gz.part05"
-        }
-      ],
-      "archive_sha256": "7197fdbee4a6e37c92a467e9f4ac7a214329048247baa4b1799ca5df4faedcc0",
+      "archive_sha256": "f43509589e98549670b21a9b078bd2a541531d327ab954eb8b1915a12042ce3d",
       "display_name": "Theos",
-      "download_size": 224367315,
+      "download_size": 224552345,
       "group": "compiler",
       "handler": "theos",
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-11caeba3c2d0/TheosRuntime.bundle.json",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-336408a626ac/TheosRuntime.bundle.json",
       "optional": true,
       "order": 20,
-      "revision": "11caeba3c2d05fe6d7259cd4857901cb1d3162d143ab2c451d3dadfb485c83e8",
+      "package_schemes": [
+        "rootful",
+        "rootless",
+        "roothide"
+      ],
+      "revision": "336408a626ac18b90dada3f030c661d8c14928f4e0374411b21f8a000a411454",
+      "roothide_headers_ref": "ac1c4fd21214548d6d308fcb835d30df1e43953d",
+      "roothide_lib_ref": "85e9b5b8aff11bbefc59525c64c8f55149926e56",
+      "roothide_theos_ref": "88506b2c22e9e07dd4ed055f23c9e398a117a2c7",
       "runtime_format": 11,
       "sdk": "iPhoneOS16.5.sdk",
       "sdks_ref": "0222fd5413cf4b9af096f37b4621afa2688572f7",
-      "summary": "iOS 端编译、链接与打包工具链。",
+      "summary": "iOS 端编译、链接与打包工具链，支持 rootful/rootless/RootHide 目标 DEB。",
       "theos_ref": "dd5c14bb9d91311e221d51b5bfb8c9e5948156db",
-      "unpacked_size": 978698240,
-      "version": "runtime-theos-11caeba3c2d0"
+      "ui": {
+        "symbol": "hammer.fill",
+        "tint": "orange"
+      },
+      "unpacked_size": 979927040,
+      "version": "runtime-theos-336408a626ac",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-336408a626ac/TheosRuntime.tar.gz"
     }
   },
   "schema": 3,
