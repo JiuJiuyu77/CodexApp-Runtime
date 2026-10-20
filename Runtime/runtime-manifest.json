@@ -4,6 +4,89 @@
     "https://ghproxy.net/"
   ],
   "runtimes": {
+    "build_tools": {
+      "archive_sha256": "8e48719bafeafdab712d9d261e549b63e30443f5d0e43d839df17088d407ac14",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-build-tools-3.27.9-329bc357d8e3/BuildToolsRuntime.tar.gz",
+      "capabilities": {
+        "build.cmake": {
+          "summary": "Configure and generate C/C++ build trees with CMake 3.27.9.",
+          "title": "CMake"
+        },
+        "build.cmake-ios": {
+          "requires": [
+            {
+              "id": "theos",
+              "provides": "ios.toolchain",
+              "reason": "Actual iOS artifact compilation/linking needs the SDK, clang/linker and signing toolchain."
+            }
+          ],
+          "summary": "Generate CMake/Ninja projects that compile and link against the managed iOS toolchain.",
+          "title": "CMake iOS build"
+        },
+        "build.ninja": {
+          "summary": "Execute Ninja build graphs with Ninja 1.11.1.",
+          "title": "Ninja"
+        }
+      },
+      "components": {
+        "cmake": "3.27.9",
+        "ninja": "1.11.1"
+      },
+      "conflicts": [],
+      "display_name": "BuildTools",
+      "download_size": 7510020,
+      "group": "compiler",
+      "handler": "portable-v1",
+      "install": {
+        "environment": {},
+        "path_entries": [
+          "bin"
+        ],
+        "probe": {
+          "arguments": [
+            "--version"
+          ],
+          "contains": "cmake version 3.27.9",
+          "executable": "bin/cmake"
+        },
+        "required_paths": [
+          "bin/cmake",
+          "bin/ninja",
+          "share/cmake-3.27/Modules/CMake.cmake",
+          "share/cmake-3.27/Templates/CPackConfig.cmake.in"
+        ],
+        "sign_paths": [
+          "bin/cmake",
+          "bin/ninja"
+        ]
+      },
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-build-tools-3.27.9-329bc357d8e3/BuildToolsRuntime.bundle.json",
+      "minimum_ios": "15.0",
+      "optional": true,
+      "order": 15,
+      "provides": [
+        "build.cmake",
+        "build.ninja",
+        "build.cmake-ios"
+      ],
+      "recommends": [
+        {
+          "id": "theos",
+          "provides": "ios.toolchain",
+          "reason": "CMake/Ninja 可独立运行；实际 iOS 编译、链接与签名仍建议使用 Theos 工具链。"
+        }
+      ],
+      "requires": [],
+      "revision": "329bc357d8e34476aaa399c0138954da7e7877b7272d46874a2a1061cec57496",
+      "runtime_format": 1,
+      "summary": "CMake + Ninja 原生构建工具，面向 iOS 15+ arm64，纯 TrollStore 与越狱环境均可安装。",
+      "ui": {
+        "symbol": "hammer.circle.fill",
+        "tint": "cyan"
+      },
+      "unpacked_size": 25860730,
+      "version": "runtime-build-tools-3.27.9-329bc357d8e3"
+    },
     "codex": {
       "archive_sha256": "b1ef47cb6e1f0a378409f123f7bb3422b6dcaf3e69164d70709d146ad7f12155",
       "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-codex-v0.162.1-4/wiki.qaq.codex_0.162.1-4_iphoneos-arm64.deb",
