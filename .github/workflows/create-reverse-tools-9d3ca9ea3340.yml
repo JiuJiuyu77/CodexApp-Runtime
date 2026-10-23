@@ -2,8 +2,7 @@ name: Create ReverseTools Release 9d3ca9ea3340
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - '.github/workflows/create-reverse-tools-9d3ca9ea3340.yml'
 
@@ -12,122 +11,12 @@ permissions:
 
 jobs:
   create-release:
-    if: github.event.head_commit.message == 'Create ReverseTools release runtime-reverse-tools-9d3ca9ea3340'
     runs-on: ubuntu-latest
     steps:
-      - name: Prepare metadata asset
+      - name: Write metadata asset
         shell: bash
         run: |
-          cat > ReverseToolsRuntime.bundle.json <<'JSON'
-{
-  "archive_bytes": 17376078,
-  "archive_sha256": "5a861b1f0220de591b4d500e9eec5b6bc054efdb6964e8d569de9e096f96f801",
-  "components": {
-    "go-dwarf": {"version": "v1.0.14"},
-    "go-macho": {"version": "v1.1.292"},
-    "mt-inject-dylib": {"version": "1"},
-    "mt-macho": {"version": "2"},
-    "mt-r2": {"version": "1"},
-    "mt-rev": {"version": "3"},
-    "radare2": {
-      "commit": "04d73504aabe7b69c3d7af8ea5d0be519fd92321",
-      "version": "6.2.4"
-    }
-  },
-  "format": 1,
-  "go_macho_version": "v1.1.292",
-  "minimum_ios": "15.0",
-  "payload_bytes": 48630726,
-  "payload_file_count": 367,
-  "radare2_ref": "04d73504aabe7b69c3d7af8ea5d0be519fd92321",
-  "radare2_version": "6.2.4",
-  "revision": "9d3ca9ea3340567dc86917b2eca5aef41111717461ee8cf6a2e46f9b779ca41a",
-  "sign_paths": [
-    "bin/radare2",
-    "bin/rabin2",
-    "bin/rasm2",
-    "bin/radiff2",
-    "bin/rahash2",
-    "bin/radare2.real",
-    "bin/mt-macho",
-    "bin/mt-inject-dylib",
-    "bin/mt-rev"
-  ],
-  "source_archive_sha256": "54e957bf1cc3aed5a49d02b6e167668db9579cda6c713b467b6a9a7cc6092548",
-  "tar_bytes": 48926720,
-  "tools": {
-    "mt-inject-dylib": {
-      "arch": "arm64",
-      "bytes": 67264,
-      "dependencies": ["/usr/lib/libSystem.B.dylib"],
-      "min_ios": "15.0",
-      "sha256": "469869d8a695041f8c90cc28ce04944505bbcd17716f0655b6fba3de71147d42"
-    },
-    "mt-macho": {
-      "arch": "arm64",
-      "bytes": 4405464,
-      "dependencies": [
-        "/usr/lib/libresolv.9.dylib",
-        "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
-        "/System/Library/Frameworks/Security.framework/Security",
-        "/usr/lib/libSystem.B.dylib"
-      ],
-      "min_ios": "15.0",
-      "sha256": "d24a9845497b55aa0a353747f4033852ed7df533dc19140fce667564350d3f2d"
-    },
-    "mt-rev": {
-      "arch": "arm64",
-      "bytes": 68072,
-      "dependencies": ["/usr/lib/libSystem.B.dylib"],
-      "min_ios": "15.0",
-      "sha256": "fb58f07cc538cdf813c225169f62711f68c098ee5a0448c12b849e94b4c8d7f2"
-    },
-    "rabin2": {
-      "arch": "arm64",
-      "bytes": 9716240,
-      "dependencies": ["/usr/lib/libSystem.B.dylib"],
-      "min_ios": "15.0",
-      "sha256": "d10ce372fab253f103a3c6c7def63cf30f7b3fb9b505e5802ca10be4cbbd2d81"
-    },
-    "radare2": {
-      "arch": "arm64",
-      "bytes": 68360,
-      "dependencies": ["/usr/lib/libSystem.B.dylib"],
-      "min_ios": "15.0",
-      "sha256": "a147c6b749af5395305be61853bcf0fadfc6f079f4f42acda1be3b02589cbea4"
-    },
-    "radare2.real": {
-      "arch": "arm64",
-      "bytes": 9882000,
-      "dependencies": ["/usr/lib/libSystem.B.dylib"],
-      "min_ios": "15.0",
-      "sha256": "4c0c9801d9c011a1537d6c7aadbe597993914c840b23ea4695755166943b6250"
-    },
-    "radiff2": {
-      "arch": "arm64",
-      "bytes": 9716224,
-      "dependencies": ["/usr/lib/libSystem.B.dylib"],
-      "min_ios": "15.0",
-      "sha256": "678b34596ba999f39262a4387cd1d3c1b9aba24c7898e850d716a1100291da9f"
-    },
-    "rahash2": {
-      "arch": "arm64",
-      "bytes": 340896,
-      "dependencies": ["/usr/lib/libSystem.B.dylib"],
-      "min_ios": "15.0",
-      "sha256": "99faa7664ff4b3adcc06aba0dc76d7028423f05a9be86de72faea763452b622f"
-    },
-    "rasm2": {
-      "arch": "arm64",
-      "bytes": 4476624,
-      "dependencies": ["/usr/lib/libSystem.B.dylib"],
-      "min_ios": "15.0",
-      "sha256": "2ecd180bd2bd155096d0dbdae83fa91e5cb5b18153c1faeecca52710a1681224"
-    }
-  },
-  "version": "reverse-tools-r2-6.2.4-9d3ca9ea3340"
-}
-JSON
+          printf '%s' 'ewogICJhcmNoaXZlX2J5dGVzIjogMTczNzYwNzgsCiAgImFyY2hpdmVfc2hhMjU2IjogIjVhODYxYjFmMDIyMGRlNTkxYjRkNTAwZTllZWM1YjZiYzA1NGVmZGI2OTY0ZThkNTY5ZGU5ZTA5NmY5NmY4MDEiLAogICJjb21wb25lbnRzIjogewogICAgImdvLWR3YXJmIjogewogICAgICAidmVyc2lvbiI6ICJ2MS4wLjE0IgogICAgfSwKICAgICJnby1tYWNobyI6IHsKICAgICAgInZlcnNpb24iOiAidjEuMS4yOTIiCiAgICB9LAogICAgIm10LWluamVjdC1keWxpYiI6IHsKICAgICAgInZlcnNpb24iOiAiMSIKICAgIH0sCiAgICAibXQtbWFjaG8iOiB7CiAgICAgICJ2ZXJzaW9uIjogIjIiCiAgICB9LAogICAgIm10LXIyIjogewogICAgICAidmVyc2lvbiI6ICIxIgogICAgfSwKICAgICJtdC1yZXYiOiB7CiAgICAgICJ2ZXJzaW9uIjogIjMiCiAgICB9LAogICAgInJhZGFyZTIiOiB7CiAgICAgICJjb21taXQiOiAiMDRkNzM1MDRhYWJlN2I2OWMzZDdhZjhlYTVkMGJlNTE5ZmQ5MjMyMSIsCiAgICAgICJ2ZXJzaW9uIjogIjYuMi40IgogICAgfQogIH0sCiAgImZvcm1hdCI6IDEsCiAgImdvX21hY2hvX3ZlcnNpb24iOiAidjEuMS4yOTIiLAogICJtaW5pbXVtX2lvcyI6ICIxNS4wIiwKICAicGF5bG9hZF9ieXRlcyI6IDQ4NjMwNzI2LAogICJwYXlsb2FkX2ZpbGVfY291bnQiOiAzNjcsCiAgInJhZGFyZTJfcmVmIjogIjA0ZDczNTA0YWFiZTdiNjljM2Q3YWY4ZWE1ZDBiZTUxOWZkOTIzMjEiLAogICJyYWRhcmUyX3ZlcnNpb24iOiAiNi4yLjQiLAogICJyZXZpc2lvbiI6ICI5ZDNjYTllYTMzNDA1NjdkYzg2OTE3YjJlY2E1YWVmNDExMTE3MTc0NjFlZThjZjZhMmU0NmY5Yjc3OWNhNDFhIiwKICAic2lnbl9wYXRocyI6IFsKICAgICJiaW4vcmFkYXJlMiIsCiAgICAiYmluL3JhYmluMiIsCiAgICAiYmluL3Jhc20yIiwKICAgICJiaW4vcmFkaWZmMiIsCiAgICAiYmluL3JhaGFzaDIiLAogICAgImJpbi9yYWRhcmUyLnJlYWwiLAogICAgImJpbi9tdC1tYWNobyIsCiAgICAiYmluL210LWluamVjdC1keWxpYiIsCiAgICAiYmluL210LXJldiIKICBdLAogICJzb3VyY2VfYXJjaGl2ZV9zaGEyNTYiOiAiNTRlOTU3YmYxY2MzYWVkNWE0OWQwMmI2ZTE2NzY2OGRiOTU3OWNkYTZjNzEzYjQ2N2I2YTlhN2NjNjA5MjU0OCIsCiAgInRhcl9ieXRlcyI6IDQ4OTI2NzIwLAogICJ0b29scyI6IHsKICAgICJtdC1pbmplY3QtZHlsaWIiOiB7CiAgICAgICJhcmNoIjogImFybTY0IiwKICAgICAgImJ5dGVzIjogNjcyNjQsCiAgICAgICJkZXBlbmRlbmNpZXMiOiBbCiAgICAgICAgIi91c3IvbGliL2xpYlN5c3RlbS5CLmR5bGliIgogICAgICBdLAogICAgICAibWluX2lvcyI6ICIxNS4wIiwKICAgICAgInNoYTI1NiI6ICI0Njk4NjlkOGE2OTUwNDFmOGM5MGNjMjhjZTA0OTQ0NTA1YmJjZDE3NzE2ZjA2NTViNmZiYTNkZTcxMTQ3ZDQyIgogICAgfSwKICAgICJtdC1tYWNobyI6IHsKICAgICAgImFyY2giOiAiYXJtNjQiLAogICAgICAiYnl0ZXMiOiA0NDA1NDY0LAogICAgICAiZGVwZW5kZW5jaWVzIjogWwogICAgICAgICIvdXNyL2xpYi9saWJyZXNvbHYuOS5keWxpYiIsCiAgICAgICAgIi9TeXN0ZW0vTGlicmFyeS9GcmFtZXdvcmtzL0NvcmVGb3VuZGF0aW9uLmZyYW1ld29yay9Db3JlRm91bmRhdGlvbiIsCiAgICAgICAgIi9TeXN0ZW0vTGlicmFyeS9GcmFtZXdvcmtzL1NlY3VyaXR5LmZyYW1ld29yay9TZWN1cml0eSIsCiAgICAgICAgIi91c3IvbGliL2xpYlN5c3RlbS5CLmR5bGliIgogICAgICBdLAogICAgICAibWluX2lvcyI6ICIxNS4wIiwKICAgICAgInNoYTI1NiI6ICJkMjRhOTg0NTQ5N2I1NWFhMGEzNTM3NDdmNDAzMzg1MmVkN2RmNTMzZGMxOTE0MGZjZTY2NzU2NDM1MGQzZjJkIgogICAgfSwKICAgICJtdC1yZXYiOiB7CiAgICAgICJhcmNoIjogImFybTY0IiwKICAgICAgImJ5dGVzIjogNjgwNzIsCiAgICAgICJkZXBlbmRlbmNpZXMiOiBbCiAgICAgICAgIi91c3IvbGliL2xpYlN5c3RlbS5CLmR5bGliIgogICAgICBdLAogICAgICAibWluX2lvcyI6ICIxNS4wIiwKICAgICAgInNoYTI1NiI6ICJmYjU4ZjA3Y2M1MzhjZGY4MTNjMjI1MTY5ZjYyNzExZjY4YzA5OGVlNWEwNDQ4YzEyYjg0OWU5NGI0YzhkN2YyIgogICAgfSwKICAgICJyYWJpbjIiOiB7CiAgICAgICJhcmNoIjogImFybTY0IiwKICAgICAgImJ5dGVzIjogOTcxNjI0MCwKICAgICAgImRlcGVuZGVuY2llcyI6IFsKICAgICAgICAiL3Vzci9saWIvbGliU3lzdGVtLkIuZHlsaWIiCiAgICAgIF0sCiAgICAgICJtaW5faW9zIjogIjE1LjAiLAogICAgICAic2hhMjU2IjogImQxMGNlMzcyZmFiMjUzZjEwM2EzYzZjN2RlZjYzY2YzMGY3YjNmYjliNTA1ZTU4MDJjYTEwYmU0Y2JiZDJkODEiCiAgICB9LAogICAgInJhZGFyZTIiOiB7CiAgICAgICJhcmNoIjogImFybTY0IiwKICAgICAgImJ5dGVzIjogNjgzNjAsCiAgICAgICJkZXBlbmRlbmNpZXMiOiBbCiAgICAgICAgIi91c3IvbGliL2xpYlN5c3RlbS5CLmR5bGliIgogICAgICBdLAogICAgICAibWluX2lvcyI6ICIxNS4wIiwKICAgICAgInNoYTI1NiI6ICJhMTQ3YzZiNzQ5YWY1Mzk1MzA1YmU2MTg1M2JjZjBmYWRmYzZmMDc5ZjRmNDJhY2RhMWJlM2IwMjU4OWNiZWE0IgogICAgfSwKICAgICJyYWRhcmUyLnJlYWwiOiB7CiAgICAgICJhcmNoIjogImFybTY0IiwKICAgICAgImJ5dGVzIjogOTg4MjAwMCwKICAgICAgImRlcGVuZGVuY2llcyI6IFsKICAgICAgICAiL3Vzci9saWIvbGliU3lzdGVtLkIuZHlsaWIiCiAgICAgIF0sCiAgICAgICJtaW5faW9zIjogIjE1LjAiLAogICAgICAic2hhMjU2IjogIjRjMGM5ODAxZDljMDExYTE1MzdkNmM3YWFkYmU1OTc5OTM5MTRjODQwYjIzZWE0Njk1NzU1MTY2OTQzYjYyNTAiCiAgICB9LAogICAgInJhZGlmZjIiOiB7CiAgICAgICJhcmNoIjogImFybTY0IiwKICAgICAgImJ5dGVzIjogOTcxNjIyNCwKICAgICAgImRlcGVuZGVuY2llcyI6IFsKICAgICAgICAiL3Vzci9saWIvbGliU3lzdGVtLkIuZHlsaWIiCiAgICAgIF0sCiAgICAgICJtaW5faW9zIjogIjE1LjAiLAogICAgICAic2hhMjU2IjogIjY3OGIzNDU5NmJhOTk5ZjM5MjYyYTQzODdjZDFkM2MxYjlhYmEyNGM3ODk4ZTg1MGQ3MTZhMTEwMDI5MWRhOWYiCiAgICB9LAogICAgInJhaGFzaDIiOiB7CiAgICAgICJhcmNoIjogImFybTY0IiwKICAgICAgImJ5dGVzIjogMzQwODk2LAogICAgICAiZGVwZW5kZW5jaWVzIjogWwogICAgICAgICIvdXNyL2xpYi9saWJTeXN0ZW0uQi5keWxpYiIKICAgICAgXSwKICAgICAgIm1pbl9pb3MiOiAiMTUuMCIsCiAgICAgICJzaGEyNTYiOiAiOTlmYWE3NjY0ZmY0YjNhZGNjMDZhYmEwZGM3NmQ3MDI4NDIzZjA1YTliZTg2ZGU3MmZhZWE3NjM0NTJiNjIyZiIKICAgIH0sCiAgICAicmFzbTIiOiB7CiAgICAgICJhcmNoIjogImFybTY0IiwKICAgICAgImJ5dGVzIjogNDQ3NjYyNCwKICAgICAgImRlcGVuZGVuY2llcyI6IFsKICAgICAgICAiL3Vzci9saWIvbGliU3lzdGVtLkIuZHlsaWIiCiAgICAgIF0sCiAgICAgICJtaW5faW9zIjogIjE1LjAiLAogICAgICAic2hhMjU2IjogIjJlY2QxODBiZDJiZDE1NTA5NmQwZGJkYWU4M2ZhOTFlNWNiNWIxODE1M2MxZmFlZWNjYTUyNzEwYTE2ODEyMjQiCiAgICB9CiAgfSwKICAidmVyc2lvbiI6ICJyZXZlcnNlLXRvb2xzLXIyLTYuMi40LTlkM2NhOWVhMzM0MCIKfQo=' | base64 -d > ReverseToolsRuntime.bundle.json
 
       - name: Create release and upload metadata
         env:
@@ -136,23 +25,12 @@ JSON
         shell: bash
         run: |
           set -euo pipefail
-          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
             gh release create "$TAG" \
               --repo "$GITHUB_REPOSITORY" \
               --target main \
               --title "$TAG" \
-              --notes $'CodexApp Reverse Tools Runtime update.\n\nRevision: 9d3ca9ea3340567dc86917b2eca5aef41111717461ee8cf6a2e46f9b779ca41a\nradare2: 6.2.4\nArchive SHA256: 5a861b1f0220de591b4d500e9eec5b6bc054efdb6964e8d569de9e096f96f801'
-          fi
+              --notes "CodexApp Reverse Tools Runtime update. Revision: 9d3ca9ea3340567dc86917b2eca5aef41111717461ee8cf6a2e46f9b779ca41a. radare2: 6.2.4. Archive SHA256: 5a861b1f0220de591b4d500e9eec5b6bc054efdb6964e8d569de9e096f96f801"
           gh release upload "$TAG" ReverseToolsRuntime.bundle.json \
             --repo "$GITHUB_REPOSITORY" \
             --clobber
-
-      - name: Verify metadata asset
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: runtime-reverse-tools-9d3ca9ea3340
-        shell: bash
-        run: |
-          set -euo pipefail
-          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets \
-            --jq '.assets[] | select(.name=="ReverseToolsRuntime.bundle.json") | [.name,.size] | @tsv'
