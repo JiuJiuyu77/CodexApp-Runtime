@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/create-reverse-tools-release-9d3ca9ea3340.yml'
+      - ".github/workflows/create-reverse-tools-release-9d3ca9ea3340.yml"
 
 permissions:
   contents: write
@@ -14,69 +14,13 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Create bundle metadata
-        shell: bash
-        run: |
-          cat > /tmp/ReverseToolsRuntime.bundle.json <<'JSON'
-{
-  "archive_bytes": 17376078,
-  "archive_sha256": "5a861b1f0220de591b4d500e9eec5b6bc054efdb6964e8d569de9e096f96f801",
-  "components": {
-    "go-dwarf": {"version": "v1.0.14"},
-    "go-macho": {"version": "v1.1.292"},
-    "mt-inject-dylib": {"version": "1"},
-    "mt-macho": {"version": "2"},
-    "mt-r2": {"version": "1"},
-    "mt-rev": {"version": "3"},
-    "radare2": {"commit": "04d73504aabe7b69c3d7af8ea5d0be519fd92321", "version": "6.2.4"}
-  },
-  "format": 1,
-  "go_macho_version": "v1.1.292",
-  "minimum_ios": "15.0",
-  "payload_bytes": 48630726,
-  "payload_file_count": 367,
-  "radare2_ref": "04d73504aabe7b69c3d7af8ea5d0be519fd92321",
-  "radare2_version": "6.2.4",
-  "revision": "9d3ca9ea3340567dc86917b2eca5aef41111717461ee8cf6a2e46f9b779ca41a",
-  "sign_paths": [
-    "bin/radare2","bin/rabin2","bin/rasm2","bin/radiff2","bin/rahash2",
-    "bin/radare2.real","bin/mt-macho","bin/mt-inject-dylib","bin/mt-rev"
-  ],
-  "source_archive_sha256": "54e957bf1cc3aed5a49d02b6e167668db9579cda6c713b467b6a9a7cc6092548",
-  "tar_bytes": 48926720,
-  "version": "reverse-tools-r2-6.2.4-9d3ca9ea3340"
-}
-JSON
-
       - name: Create release shell
         env:
           GH_TOKEN: ${{ github.token }}
-        shell: bash
         run: |
           set -euo pipefail
-          TAG='runtime-reverse-tools-9d3ca9ea3340'
-          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release create "$TAG"               --repo "$GITHUB_REPOSITORY"               --target main               --title "$TAG"               --notes 'CodexApp Reverse Tools Runtime update.
-
-Revision: 9d3ca9ea3340567dc86917b2eca5aef41111717461ee8cf6a2e46f9b779ca41a
-radare2: 6.2.4
-Expected asset: ReverseToolsRuntime.tar.gz
-Expected bytes: 17376078
-Archive SHA256: 5a861b1f0220de591b4d500e9eec5b6bc054efdb6964e8d569de9e096f96f801'
+          TAG="runtime-reverse-tools-9d3ca9ea3340"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            exit 0
           fi
-
-      - name: Upload bundle metadata
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          gh release upload runtime-reverse-tools-9d3ca9ea3340             /tmp/ReverseToolsRuntime.bundle.json             --repo "$GITHUB_REPOSITORY"             --clobber
-
-      - name: Verify release shell
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          gh release view runtime-reverse-tools-9d3ca9ea3340             --repo "$GITHUB_REPOSITORY"             --json tagName,assets             --jq '{tag:.tagName,assets:[.assets[].name]}'
+          gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target main --title "$TAG" --notes "CodexApp Reverse Tools Runtime update. Expected asset: ReverseToolsRuntime.tar.gz; expected bytes: 17376078; SHA256: 5a861b1f0220de591b4d500e9eec5b6bc054efdb6964e8d569de9e096f96f801."
