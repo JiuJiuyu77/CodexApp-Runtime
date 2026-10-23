@@ -563,8 +563,8 @@
       "version": "runtime-python-3.13.14-b04613a42bae"
     },
     "reverse_tools": {
-      "archive_sha256": "22e430add8197c83d15b448f77c1584848e2e63f0d8782db6851db909ae4fe49",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-840486d88bfe/ReverseToolsRuntime.tar.gz",
+      "archive_sha256": "5a861b1f0220de591b4d500e9eec5b6bc054efdb6964e8d569de9e096f96f801",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-9d3ca9ea3340/ReverseToolsRuntime.tar.gz",
       "capabilities": {
         "reverse.inject": {
           "summary": "Add a dylib load command to supported Mach-O files before re-signing.",
@@ -575,7 +575,7 @@
           "title": "Mach-O analysis"
         },
         "reverse.radare2": {
-          "summary": "r2/rabin2/rasm2/radiff2/rahash2 analysis tools.",
+          "summary": "Full r2/radare2 capability with live-app workspace staging, dynamic memory guard and large-result externalization.",
           "title": "radare2 toolset"
         }
       },
@@ -592,8 +592,11 @@
         "mt-macho": {
           "version": "2"
         },
+        "mt-r2": {
+          "version": "1"
+        },
         "mt-rev": {
-          "version": "2"
+          "version": "3"
         },
         "radare2": {
           "commit": "04d73504aabe7b69c3d7af8ea5d0be519fd92321",
@@ -602,11 +605,11 @@
       },
       "conflicts": [],
       "display_name": "ReverseTools",
-      "download_size": 17375243,
+      "download_size": 17376078,
       "group": "tools",
       "handler": "reverse_tools",
       "ipsw_ref": null,
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-840486d88bfe/ReverseToolsRuntime.bundle.json",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-9d3ca9ea3340/ReverseToolsRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": true,
       "order": 10,
@@ -619,15 +622,15 @@
       "radare2_version": "6.2.4",
       "recommends": [],
       "requires": [],
-      "revision": "840486d88bfe5001344e22873cd61eac2eb5ce14cc974c4637de19818b06fbfc",
+      "revision": "9d3ca9ea3340567dc86917b2eca5aef41111717461ee8cf6a2e46f9b779ca41a",
       "runtime_format": 1,
-      "summary": "radare2 工具组 + mt-macho ObjC/Swift/Code Signature/chained-fixups 深度解析 + mt-rev 编排 + Mach-O dylib 注入。",
+      "summary": "带 iOS 大二进制内存保护的 radare2 工具组 + mt-macho ObjC/Swift/Code Signature/chained-fixups 深度解析 + mt-rev 编排 + Mach-O dylib 注入。",
       "ui": {
         "symbol": "wrench.and.screwdriver.fill",
         "tint": "purple"
       },
-      "unpacked_size": 48865280,
-      "version": "runtime-reverse-tools-840486d88bfe"
+      "unpacked_size": 48926720,
+      "version": "runtime-reverse-tools-9d3ca9ea3340"
     },
     "theos": {
       "archive_sha256": "f43509589e98549670b21a9b078bd2a541531d327ab954eb8b1915a12042ce3d",
