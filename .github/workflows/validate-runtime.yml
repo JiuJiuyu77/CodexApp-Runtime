@@ -1,0 +1,103 @@
+name: Validate runtime manifest
+
+# Guards the contract described in Runtime/CONTRACT.md. Every consumer (CodexApp,
+# minis, anything else) trusts runtime-manifest.json to name a complete, digest
+# pinned, resolvable runtime — so a bad edit must fail here, not on device.
+#
+# Everything runs on ubuntu-latest with stock python3: the checks are structural
+# and never download a runtime unless `check_releases` is enabled.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Runtime/**"
+      - ".github/workflows/validate-runtime.yml"
+  pull_request:
+    paths:
+      - "Runtime/**"
+      - ".github/workflows/validate-runtime.yml"
+  workflow_dispatch:
+    inputs:
+      check_releases:
+        description: "Also verify each archive_sha256 against the published asset (downloads everything)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-runtime-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+env:
+  MANIFEST: Runtime/runtime-manifest.json
+
+jobs:
+  contract:
+    name: Manifest contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python version
+        run: python3 -V
+
+      - name: Structure, handlers, digests, install blocks
+        run: python3 Runtime/minis/tools/runtime_adapter.py --manifest "$MANIFEST" verify-manifest
+
+      - name: Capability graph resolves
+        run: |
+          set -euo pipefail
+          A=(python3 Runtime/minis/tools/runtime_adapter.py --manifest "$MANIFEST")
+          while read -r wanted; do
+            [ -z "$wanted" ] && continue
+            echo "::group::plan $wanted"
+            "${A[@]}" plan $wanted --json > /dev/null
+            echo "resolved"
+            echo "::endgroup::"
+          done <<'PLANS'
+          codex.cli
+          codex.app-server codex.code-mode
+          core.git core.search core.http core.json core.file core.diff core.patch core.archive
+          node.javascript node.packages node.fetch node.process
+          python.runtime python.stdlib
+          ios.toolchain ios.compile ios.link ios.package
+          ios.package.rootless ios.package.roothide build.cmake-ios node.native-addon
+          reverse.radare2 reverse.macho reverse.inject
+          compiler.ollvm.frontend compiler.ollvm.obfuscation compiler.ollvm.ios-artifact
+          PLANS
+
+      - name: minis router covers every provided capability
+        run: python3 Runtime/minis/tools/capability_router.py --manifest "$MANIFEST" coverage
+
+      - name: Adapter self-report (informational)
+        run: python3 Runtime/minis/tools/runtime_adapter.py doctor
+
+  releases:
+    name: Release digests
+    if: github.event_name == 'workflow_dispatch' && inputs.check_releases
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download every runtime and verify archive_sha256
+        run: |
+          set -euo pipefail
+          A=(python3 Runtime/minis/tools/runtime_adapter.py --manifest "$MANIFEST")
+          python3 - "$MANIFEST" <<'PY' > /tmp/runtime-ids.txt
+          import json, sys
+          manifest = json.load(open(sys.argv[1]))
+          for runtime_id in sorted(manifest["runtimes"]):
+              print(runtime_id)
+          PY
+          workdir="$(mktemp -d)"
+          while read -r runtime_id; do
+            echo "::group::install $runtime_id"
+            "${A[@]}" install "$runtime_id" --dest "$workdir" --no-probe | tee "/tmp/$runtime_id.json"
+            python3 -c "import json,sys; d=json.load(open('/tmp/$runtime_id.json')); sys.exit(0 if d['verify']['ok'] else 1)"
+            echo "::endgroup::"
+          done < /tmp/runtime-ids.txt
