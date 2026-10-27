@@ -246,12 +246,15 @@ jobs:
 
           # Build-time code generators (node_js2c, torque, gen_node_def, ...) are
           # declared with 'toolsets': ['host'] because they must RUN during the
-          # build. Without these overrides they inherit the iOS wrapper and
-          # become arm64 iOS binaries, which the x86_64 runner cannot execute
-          # ("Bad CPU type in executable"). The makefile's CC.host etc. use ?=,
-          # so command-line assignments win.
-          HOST_CC="xcrun --sdk macosx clang"
-          HOST_CXX="xcrun --sdk macosx clang++ -std=gnu++20"
+          # build. Without this they inherit the iOS wrapper and become arm64
+          # iOS binaries the x86_64 runner cannot execute ("Bad CPU type"), and
+          # they also inherit arm64-only flags such as -mbranch-protection=.
+          # The makefile's CC.host etc. use ?=, so command-line wins.
+          cp Runtime/Node/wrappers/host-compiler.py "$WRAP/clang-host"
+          cp Runtime/Node/wrappers/host-compiler.py "$WRAP/clang++-host"
+          chmod +x "$WRAP/clang-host" "$WRAP/clang++-host"
+          HOST_CC="$WRAP/clang-host"
+          HOST_CXX="$WRAP/clang++-host"
 
           # Capture the full log; a 40-minute native build is unusable if the
           # failure scrolls out of the Actions viewer.
