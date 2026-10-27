@@ -124,6 +124,15 @@ else:
       # provide for iOS. gnu++20 is required by Node 24 sources.
       ['OS=="ios"', {
         'defines': ['_DARWIN_USE_64_BIT_INODE=1'],
+        # Apple frameworks Node/abseil expect on darwin. These also reach the
+        # 'host' toolset, which is how build-time generators such as
+        # bytecode_builtins_list_generator resolve CoreFoundation (abseil's
+        # cctz calls CFTimeZoneGetName).
+        'libraries': [
+          '-framework CoreFoundation',
+          '-framework Foundation',
+          '-framework Security',
+        ],
         'xcode_settings': {
           'IPHONEOS_DEPLOYMENT_TARGET': '%s',
           'GCC_VERSION': 'com.apple.compilers.llvm.clang.1_0',
