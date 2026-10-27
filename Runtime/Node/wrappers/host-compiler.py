@@ -2,23 +2,23 @@
 """Host-toolset compiler wrapper for the iOS cross build.
 
 Node's build-time code generators (node_js2c, torque, gen_node_def, ...) are
-declared with 'toolsets': ['host'] because they must *run* on the build machine.
-They therefore have to be compiled for the host (x86_64 on an Intel runner),
-not for iOS.
+declared with 'toolsets': ['host'] because they must *run* on the build machine,
+so they have to be compiled for the host (x86_64 on an Intel runner), not iOS.
 
-gyp, however, derives many flags from target_arch, which is arm64 here, so the
-host compile inherits target-only options. Two break it outright:
+gyp derives many flags from target_arch (arm64 here), and the build exports
+SDKROOT pointing at the iPhoneOS SDK, which clang honours as an environment
+variable. Left alone the generators become arm64 iOS binaries that the runner
+cannot execute:
 
-    clang++: error: unsupported option '-mbranch-protection=' for target
-             'x86_64-apple-darwin25.6.0'
-    (and an inherited -arch arm64 / -isysroot iPhoneOS would produce an arm64
-     iOS object the x86_64 runner cannot load)
+    /bin/sh: out/Release/node_js2c: Bad CPU type in executable
+    ld: warning: building for 'iOS', but linking in dylib ... built for 'macOS'
 
-So the host toolset gets a wrapper that drops target-only options and compiles
-against the macOS SDK for the host architecture. Control-flow integrity stays
-enabled for the shipped arm64 code, which still uses the iOS wrapper.
+This wrapper drops target-only flags, clears the inherited iOS toolchain
+environment, and compiles against the macOS SDK for the host architecture.
+Control-flow integrity and the iOS SDK stay in effect for the shipped arm64
+code, which still goes through the iOS wrapper.
 
-Installed as both `clang-host` and `clang++-host`; the driver is chosen from the
+Installed as both `clang-host` and `clang++-host`; the driver comes from the
 invoked name, and C++ always gets the C++20 standard Node 24 requires.
 """
 import os
@@ -27,11 +27,23 @@ import sys
 # Options that take a separate value and are meaningless for the host toolset.
 DROP_WITH_VALUE = ('-arch', '-isysroot', '-target', '--target')
 
-# Options that are only meaningful for the arm64 iOS target.
+# Options that only make sense for the arm64 iOS target.
 DROP_PREFIXES = (
     '-mbranch-protection=',
     '-miphoneos-version-min=',
     '-mios-simulator-version-min=',
+)
+
+# Environment that would re-introduce the iOS toolchain: clang reads SDKROOT
+# itself, and the rest carry CFLAGS-style overrides from the target build.
+SCRUB_ENV = (
+    'SDKROOT',
+    'IPHONEOS_DEPLOYMENT_TARGET',
+    'CFLAGS',
+    'CXXFLAGS',
+    'CPPFLAGS',
+    'LDFLAGS',
+    'GYP_DEFINES',
 )
 
 args = []
@@ -57,4 +69,8 @@ if driver == 'clang++':
     cmd.append('-std=gnu++20')
 cmd.extend(args)
 
-os.execvp(cmd[0], cmd)
+env = dict(os.environ)
+for key in SCRUB_ENV:
+    env.pop(key, None)
+
+os.execvpe(cmd[0], cmd, env)
