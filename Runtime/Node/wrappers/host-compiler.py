@@ -69,6 +69,12 @@ if driver == 'clang++':
     cmd.append('-std=gnu++20')
 cmd.extend(args)
 
+# When linking (no -c/-E/-M), supply the Apple frameworks the generators need.
+# abseil's cctz calls CFTimeZoneGetName, which lives in CoreFoundation; without
+# this, host tools fail to link with "symbol(s) not found for architecture".
+if not any(a in ('-c', '-E', '-M', '-MM') for a in args):
+    cmd.extend(['-framework', 'CoreFoundation', '-framework', 'Foundation'])
+
 env = dict(os.environ)
 for key in SCRUB_ENV:
     env.pop(key, None)
