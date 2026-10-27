@@ -222,8 +222,11 @@ jobs:
           # dropping them is safe.
           test -f out/Makefile
           sed -i.bak -e 's/ -Wl,--start-group//g' -e 's/ -Wl,--end-group//g' out/Makefile
-          if grep -q -- "--start-group" out/Makefile; then
+          # Only real flag uses matter; the makefile's comments also mention
+          # these strings when explaining the wasm special case.
+          if grep -v '^[[:space:]]*#' out/Makefile | grep -q -- "-Wl,--start-group"; then
             echo "::error::linker groups still present in out/Makefile" >&2
+            grep -v '^[[:space:]]*#' out/Makefile | grep -n -- "-Wl,--start-group" | head -3 >&2
             exit 1
           fi
           echo "removed Linux-style linker groups from out/Makefile"
