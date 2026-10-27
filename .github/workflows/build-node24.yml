@@ -250,11 +250,18 @@ jobs:
           # iOS binaries the x86_64 runner cannot execute ("Bad CPU type"), and
           # they also inherit arm64-only flags such as -mbranch-protection=.
           # The makefile's CC.host etc. use ?=, so command-line wins.
-          cp Runtime/Node/wrappers/host-compiler.py "$WRAP/clang-host"
-          cp Runtime/Node/wrappers/host-compiler.py "$WRAP/clang++-host"
+          cp "$GITHUB_WORKSPACE/Runtime/Node/wrappers/host-compiler.py" "$WRAP/clang-host"
+          cp "$GITHUB_WORKSPACE/Runtime/Node/wrappers/host-compiler.py" "$WRAP/clang++-host"
           chmod +x "$WRAP/clang-host" "$WRAP/clang++-host"
           HOST_CC="$WRAP/clang-host"
           HOST_CXX="$WRAP/clang++-host"
+
+          # Prove the host wrapper produces a runnable binary before spending
+          # 20 minutes compiling: this is what broke with "Bad CPU type".
+          printf 'int main(){return 0;}\n' > "$RUNNER_TEMP/hostcheck.cc"
+          "$HOST_CXX" "$RUNNER_TEMP/hostcheck.cc" -o "$RUNNER_TEMP/hostcheck"
+          "$RUNNER_TEMP/hostcheck"
+          echo "host toolchain OK: $(file "$RUNNER_TEMP/hostcheck")"
 
           # Capture the full log; a 40-minute native build is unusable if the
           # failure scrolls out of the Actions viewer.
