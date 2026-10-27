@@ -1,0 +1,389 @@
+name: Build Node 24 Runtime
+
+# Builds a Node.js 24 runtime bundle for CodexApp and publishes it with exactly
+# the same layout and metadata contract as the existing Node 18 releases:
+#
+#   NodeRuntime.tar.gz       runtime tree consumed by CodexApp
+#   NodeRuntime.bundle.json  metadata consumed by runtime-manifest.json
+#
+# Node is compiled statically (libnode.a, JIT-less V8) against the iPhoneOS SDK
+# and wrapped in NodeMobile.framework, then laid out as:
+#
+#   bin/node            tiny launcher linked against the framework
+#   bin/{npm,npx,...}   symlinks to bin/node
+#   lib/node_modules/   npm + corepack
+#   lib/codex/          CodexApp bootstrap shims
+#   devkit/node/        headers/config.gypi for node-gyp
+#   Frameworks/NodeMobile.framework
+#   manifest.json       per-runtime metadata
+#
+# Everything runs natively on a macOS runner with a real Xcode.
+
+on:
+  workflow_dispatch:
+    inputs:
+      node_version:
+        description: "Node.js version to build (e.g. 24.22.1)"
+        type: string
+        default: "24.22.1"
+      npm_version:
+        description: "npm version to bundle (empty = whatever ships with Node)"
+        type: string
+        default: ""
+      corepack_version:
+        description: "corepack version to bundle"
+        type: string
+        default: "0.28.0"
+      publish:
+        description: "Create/update the GitHub release (off = artifact only)"
+        type: boolean
+        default: true
+      runner:
+        description: "Runner image"
+        type: string
+        default: "macos-26-intel"
+      xcode_version:
+        description: "Wanted Xcode major.minor"
+        type: string
+        default: "26.6"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: node24-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' && github.run_id || 'push' }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: ${{ inputs.node_version || '24.22.1' }}
+  COREPACK_VERSION: ${{ inputs.corepack_version || '0.28.0' }}
+  IPHONEOS_DEPLOYMENT_TARGET: "15.0"
+
+jobs:
+  build:
+    runs-on: ${{ inputs.runner || 'macos-26-intel' }}
+    timeout-minutes: 360
+    steps:
+      - name: Runner info
+        run: |
+          uname -m
+          sw_vers
+          ls /Applications | grep -E '^Xcode' || true
+
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        id: xcode
+        run: |
+          set -euo pipefail
+          WANTED="${{ inputs.xcode_version || '26.6' }}"
+          MAJOR="${WANTED%%.*}"
+          CAND=""
+          if [ -d "/Applications/Xcode_${WANTED}.app" ]; then
+            CAND="/Applications/Xcode_${WANTED}.app"
+          else
+            CAND="$(ls -d /Applications/Xcode_${MAJOR}.*.app 2>/dev/null | sort -V | tail -1 || true)"
+          fi
+          if [ -n "${CAND:-}" ]; then
+            sudo xcode-select -s "$CAND/Contents/Developer"
+          fi
+          xcodebuild -version
+          SDK="$(xcrun --sdk iphoneos --show-sdk-version)"
+          echo "sdk=${SDK}" >> "$GITHUB_OUTPUT"
+          echo "iPhoneOS SDK ${SDK}"
+
+      - name: Install build dependencies
+        run: |
+          set -euo pipefail
+          brew install ldid || true
+          command -v ldid && ldid -h | head -2 || echo "ldid unavailable; artifacts stay unsigned"
+
+      # libnode.a is a long compile; cache the configured+build tree so a rerun
+      # after a late-step failure costs a minute instead of an hour.
+      - name: Cache Node build
+        id: node-cache
+        uses: actions/cache@v4
+        with:
+          path: node-src
+          key: node24-${{ env.NODE_VERSION }}-${{ runner.arch }}-sdk${{ steps.xcode.outputs.sdk }}-${{ hashFiles('Runtime/Node/patches/**') }}
+
+      - name: Fetch Node.js source
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          rm -rf node-src "node-v${NODE_VERSION}" node.tar.xz
+          curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}.tar.xz" -o node.tar.xz
+          curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/SHASUMS256.txt" -o SHASUMS256.txt
+          grep " node-v${NODE_VERSION}.tar.xz\$" SHASUMS256.txt | shasum -a 256 -c -
+          tar -xf node.tar.xz
+          mv "node-v${NODE_VERSION}" node-src
+          echo "source ready"
+
+      - name: Apply iOS patches
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          python3 Runtime/Node/patches/apply-ios-patches.py node-src
+
+      - name: Configure Node for iOS arm64
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        working-directory: node-src
+        env:
+          GYP_DEFINES: "target_arch=arm64 host_os=mac target_os=ios"
+        run: |
+          set -euo pipefail
+          # Static, JIT-less: iOS never allows W+X pages, so V8 runs with the JIT
+          # disabled and without baked-in snapshot/code-cache blobs.
+          ./configure \
+            --dest-os=ios \
+            --dest-cpu=arm64 \
+            --with-intl=none \
+            --cross-compiling \
+            --enable-static \
+            --openssl-no-asm \
+            --v8-options=--jitless \
+            --without-node-code-cache \
+            --without-node-snapshot
+
+      - name: Build Node
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        working-directory: node-src
+        env:
+          GYP_DEFINES: "target_arch=arm64 host_os=mac target_os=ios"
+        run: |
+          set -euo pipefail
+          make -j"$(getconf _NPROCESSORS_ONLN)"
+          test -f out/Release/libnode.a
+          ls -lh out/Release/libnode.a
+
+      - name: Assemble NodeMobile.framework
+        run: |
+          set -euo pipefail
+          FW="$RUNNER_TEMP/NodeMobile.framework"
+          rm -rf "$FW"; mkdir -p "$FW/Headers" "$FW/Modules"
+
+          SDK="$(xcrun --sdk iphoneos --show-sdk-path)"
+          OUT=node-src/out/Release
+          test -f "$OUT/libnode.a"
+
+          # libnode.a carries Node's own objects but not the V8/uv/openssl
+          # archives it references. Force-load libnode, then pass every other
+          # archive as an input so the linker pulls only what is referenced:
+          # avoids both missing symbols and duplicate-object clashes.
+          LIBS=()
+          for a in "$OUT"/*.a; do
+            base="$(basename "$a")"
+            case "$base" in
+              libnode.a|libgtest*.a|libnode_test*.a) continue ;;
+            esac
+            LIBS+=("$a")
+          done
+          echo "linking libnode.a + ${#LIBS[@]} dependency archives"
+
+          xcrun --sdk iphoneos clang++ -arch arm64 \
+            -isysroot "$SDK" \
+            -miphoneos-version-min="$IPHONEOS_DEPLOYMENT_TARGET" \
+            -dynamiclib \
+            -Wl,-force_load,"$OUT/libnode.a" \
+            -Wl,-no_fixup_chains \
+            -Wl,-install_name,@rpath/NodeMobile.framework/NodeMobile \
+            -Wl,-undefined,dynamic_lookup \
+            -o "$FW/NodeMobile" \
+            Runtime/Node/launcher/node_mobile.cc \
+            "${LIBS[@]}" \
+            -framework CoreFoundation \
+            -framework Foundation \
+            -framework Security \
+            -lz -lc++
+
+          cp Runtime/Node/ios-framework/NodeMobile.h "$FW/Headers/NodeMobile.h"
+          cp Runtime/Node/ios-framework/Info.plist "$FW/Info.plist"
+          printf 'framework module NodeMobile {\n  umbrella header "NodeMobile.h"\n\n  export *\n  module * { export * }\n}\n' > "$FW/Modules/module.modulemap"
+
+          file "$FW/NodeMobile"
+          xcrun vtool -show-build "$FW/NodeMobile"
+          ls -lh "$FW"
+          echo "FW_DIR=$FW" >> "$GITHUB_ENV"
+
+      - name: Build bin/node launcher
+        run: |
+          set -euo pipefail
+          R="$RUNNER_TEMP/runtime"
+          rm -rf "$R"; mkdir -p "$R/bin" "$R/Frameworks" "$R/lib/node_modules"
+          cp -R "$FW_DIR" "$R/Frameworks/NodeMobile.framework"
+
+          SDK="$(xcrun --sdk iphoneos --show-sdk-path)"
+          # No -undefined dynamic_lookup here on purpose: bin/node must resolve
+          # node_start from the framework at link time, so a missing entry point
+          # fails the build instead of crashing on device.
+          xcrun --sdk iphoneos clang++ -arch arm64 \
+            -isysroot "$SDK" \
+            -miphoneos-version-min="$IPHONEOS_DEPLOYMENT_TARGET" \
+            -F "$R/Frameworks" \
+            -framework NodeMobile \
+            -Wl,-rpath,@executable_path/../Frameworks \
+            -O2 \
+            -o "$R/bin/node" \
+            Runtime/Node/launcher/launcher.mm
+          chmod +x "$R/bin/node"
+          for n in npm npx corepack pnpm pnpx yarn yarnpkg node-gyp; do
+            ln -sf node "$R/bin/$n"
+          done
+          file "$R/bin/node"
+          xcrun vtool -show-build "$R/bin/node"
+          echo "RUNTIME_DIR=$R" >> "$GITHUB_ENV"
+
+      - name: Install npm and corepack
+        run: |
+          set -euo pipefail
+          R="$RUNTIME_DIR"
+          NPM_SPEC="${{ inputs.npm_version }}"
+          if [ -z "$NPM_SPEC" ]; then
+            NPM_SPEC="$(python3 -c "import json;print(json.load(open('node-src/deps/npm/package.json'))['version'])")"
+          fi
+          echo "bundling npm ${NPM_SPEC}"
+
+          # npm ships as a directory inside the Node tarball; copy it verbatim
+          # so its bundled dependencies stay intact.
+          mkdir -p "$R/lib/node_modules/npm"
+          cp -R node-src/deps/npm/. "$R/lib/node_modules/npm/"
+          python3 - "$R/lib/node_modules/npm/package.json" "$NPM_SPEC" <<'PY'
+          import io, json, sys
+          path, version = sys.argv[1], sys.argv[2]
+          with io.open(path, encoding='utf-8') as f:
+              data = json.load(f)
+          data['version'] = version
+          with io.open(path, 'w', encoding='utf-8') as f:
+              json.dump(data, f, indent=2, ensure_ascii=False)
+              f.write('\n')
+          print('npm version pinned to', version)
+          PY
+
+          # corepack comes from the npm registry as a tarball.
+          curl -fsSL "https://registry.npmjs.org/corepack/-/corepack-${COREPACK_VERSION}.tgz" -o /tmp/corepack.tgz
+          mkdir -p "$R/lib/node_modules/corepack"
+          tar -xzf /tmp/corepack.tgz -C "$R/lib/node_modules/corepack" --strip-components=1
+          test -f "$R/lib/node_modules/corepack/dist/corepack.js"
+
+      - name: Install CodexApp shims and devkit
+        run: |
+          set -euo pipefail
+          R="$RUNTIME_DIR"
+          mkdir -p "$R/lib/codex"
+          cp Runtime/Node/shims/*.js "$R/lib/codex/"
+          python3 Runtime/Node/scripts/stage-devkit.py node-src "$R"
+          test -f "$R/devkit/node/include/node/node.h"
+          test -f "$R/devkit/node/include/node/node_api.h"
+          echo "shims and devkit ready"
+
+      - name: Emit manifest.json
+        run: |
+          set -euo pipefail
+          python3 Runtime/Node/scripts/write-manifest.py \
+            --root "$RUNTIME_DIR" \
+            --node-version "$NODE_VERSION" \
+            --corepack-version "$COREPACK_VERSION"
+
+      - name: Verify runtime layout
+        run: |
+          set -euo pipefail
+          R="$RUNTIME_DIR"
+          # Both Mach-O payloads must be arm64 with iOS platform markers.
+          for f in "$R/bin/node" "$R/Frameworks/NodeMobile.framework/NodeMobile"; do
+            file "$f"
+            xcrun vtool -show-build "$f"
+          done
+          file "$R/bin/node" | grep -q arm64
+          # Every path the manifest promises must actually exist.
+          python3 - "$R" <<'PY'
+          import json, os, sys
+          root = sys.argv[1]
+          with open(os.path.join(root, 'manifest.json')) as f:
+              meta = json.load(f)
+          required = meta['install']['required_paths']
+          missing = [p for p in required if not os.path.lexists(os.path.join(root, p))]
+          assert not missing, 'missing required paths: %s' % missing
+          print('all %d required paths present' % len(required))
+          probe = meta['install']['probe']
+          print('probe executable:', probe['executable'])
+          PY
+
+      - name: Package runtime
+        id: package
+        run: |
+          set -euo pipefail
+          R="$RUNTIME_DIR"
+          OUT="$RUNNER_TEMP/out"; rm -rf "$OUT"; mkdir -p "$OUT"
+
+          # Deterministic archive: sorted entries, zeroed owner/mtime so that an
+          # unchanged tree always produces an identical digest.
+          ( cd "$R" && find . -mindepth 1 | LC_ALL=C sort | \
+              tar --format=gnu --no-recursion -T - \
+                  --owner=0 --group=0 --numeric-owner \
+                  --mtime='@0' -cf "$OUT/NodeRuntime.tar" )
+          gzip -9n -c "$OUT/NodeRuntime.tar" > "$OUT/NodeRuntime.tar.gz"
+          rm -f "$OUT/NodeRuntime.tar"
+          ls -lh "$OUT/NodeRuntime.tar.gz"
+
+          SHA="$(shasum -a 256 "$OUT/NodeRuntime.tar.gz" | cut -d' ' -f1)"
+          UNPACKED="$(du -sk "$R" | cut -f1 | awk '{print $1*1024}')"
+          FILES="$(find "$R" -type f | wc -l | tr -d ' ')"
+
+          python3 Runtime/Node/scripts/write-bundle-json.py \
+            --runtime-root "$R" \
+            --node-version "$NODE_VERSION" \
+            --corepack-version "$COREPACK_VERSION" \
+            --archive "$OUT/NodeRuntime.tar.gz" \
+            --archive-sha "$SHA" \
+            --unpacked-bytes "$UNPACKED" \
+            --file-count "$FILES" \
+            --out "$OUT/NodeRuntime.bundle.json"
+
+          REV="$(python3 -c "import json;print(json.load(open('$OUT/NodeRuntime.bundle.json'))['revision'])")"
+          TAG="runtime-node-${NODE_VERSION}-${REV:0:12}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_TAG=$TAG" >> "$GITHUB_ENV"
+          echo "bundle tag: $TAG"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: node24-runtime
+          path: |
+            ${{ runner.temp }}/out/NodeRuntime.tar.gz
+            ${{ runner.temp }}/out/NodeRuntime.bundle.json
+          retention-days: 14
+
+      - name: Publish release
+        if: ${{ inputs.publish }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="$RELEASE_TAG"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "release $TAG exists; replacing assets"
+            gh release delete-asset "$TAG" NodeRuntime.tar.gz --repo "$GITHUB_REPOSITORY" -y || true
+            gh release delete-asset "$TAG" NodeRuntime.bundle.json --repo "$GITHUB_REPOSITORY" -y || true
+          else
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" \
+              --prerelease \
+              --title "Node.js ${NODE_VERSION} Runtime" \
+              --notes "CodexApp Node.js ${NODE_VERSION} runtime (iOS 15+, arm64, JIT-less V8)."
+          fi
+          gh release upload "$TAG" \
+            "$RUNNER_TEMP"/out/NodeRuntime.tar.gz \
+            "$RUNNER_TEMP"/out/NodeRuntime.bundle.json \
+            --repo "$GITHUB_REPOSITORY" --clobber
+
+      - name: Summary
+        run: |
+          {
+            echo "### Node ${NODE_VERSION} runtime"
+            echo ""
+            echo "- tag: \`${RELEASE_TAG}\`"
+            echo "- node: \`${NODE_VERSION}\`"
+            echo "- corepack: \`${COREPACK_VERSION}\`"
+            echo "- iOS deployment target: \`${IPHONEOS_DEPLOYMENT_TARGET}\`"
+            echo "- SDK: \`$(xcrun --sdk iphoneos --show-sdk-version)\`"
+          } >> "$GITHUB_STEP_SUMMARY"
