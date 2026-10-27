@@ -161,10 +161,16 @@ jobs:
           mkdir -p "$WRAP"
           printf '#!/bin/sh\nexec xcrun --sdk iphoneos clang -arch arm64 -isysroot "%s" -miphoneos-version-min=%s "$@"\n' \
             "$SDK" "$IPHONEOS_DEPLOYMENT_TARGET" > "$WRAP/clang-ios"
-          printf '#!/bin/sh\nexec xcrun --sdk iphoneos clang++ -arch arm64 -isysroot "%s" -miphoneos-version-min=%s "$@"\n' \
+          # -std=gnu++20 is deliberate: common.gypi only sets C++20 for the
+          # non-Apple OS list, and for darwin/iOS it relies on xcode_settings,
+          # which gyp's make generator does not translate into -std= flags.
+          # Without it abseil refuses to compile ("C++ versions less than C++17
+          # are not supported") and Node 24 sources cannot build.
+          printf '#!/bin/sh\nexec xcrun --sdk iphoneos clang++ -arch arm64 -isysroot "%s" -miphoneos-version-min=%s -std=gnu++20 -stdlib=libc++ -fno-strict-aliasing "$@"\n' \
             "$SDK" "$IPHONEOS_DEPLOYMENT_TARGET" > "$WRAP/clang++-ios"
           chmod +x "$WRAP/clang-ios" "$WRAP/clang++-ios"
           echo "SDK=$SDK"
+          echo "cxx wrapper: $(cat "$WRAP/clang++-ios")"
 
           export CC="$WRAP/clang-ios"
           export CXX="$WRAP/clang++-ios"
@@ -192,6 +198,16 @@ jobs:
             | grep -E "TARGET_OS_IPHONE|TARGET_OS_MAC" || true
           grep -c "clang-ios" out/Makefile || echo "WARNING: wrapper not referenced in out/Makefile"
           grep -i -m3 "iphoneos" out/Makefile || true
+
+          # Confirm the C++ standard actually reaches the compiler: abseil (via
+          # V8) hard-errors below C++17, which is how the first attempt failed.
+          printf '#include <type_traits>\n#if __cplusplus < 201703L\n#error cxx_std_too_old\n#endif\nint main(){return 0;}\n' > /tmp/cxxcheck.cc
+          if "$CXX" -c /tmp/cxxcheck.cc -o /tmp/cxxcheck.o; then
+            echo "OK: iOS C++ toolchain reports $( "$CXX" -dM -E -x c++ /dev/null | awk '/__cplusplus/{print $3}' )"
+          else
+            echo "::error::iOS C++ toolchain is not building as C++17 or newer" >&2
+            exit 1
+          fi
           echo "--- configure done ---"
 
       - name: Build Node
@@ -416,6 +432,15 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "RELEASE_TAG=$TAG" >> "$GITHUB_ENV"
           echo "bundle tag: $TAG"
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: node24-build-log
+          path: node-src/build.log
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
