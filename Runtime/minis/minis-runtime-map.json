@@ -1,0 +1,221 @@
+{
+  "schema": 1,
+  "target": "minis",
+  "describes": "CodexApp-Runtime runtime-manifest.json schema 4 capabilities mapped onto minis execution backends",
+  "hosts": {
+    "ios-native": {
+      "description": "Darwin arm64 host that can exec Mach-O: CodexApp itself, or a minis native build run on device.",
+      "can_exec_darwin_binaries": true
+    },
+    "ish-linux": {
+      "description": "minis shell sandbox (iSH, Alpine/musl, aarch64 Linux). Cannot exec Mach-O; Unix toolchain is the native one.",
+      "can_exec_darwin_binaries": false,
+      "host_tools": ["git", "curl", "rg", "unzip", "diff", "tar", "gzip", "make", "clang", "python3"],
+      "missing_host_tools": ["jq", "zip", "file", "patch", "cmake", "ninja", "node", "ldid"]
+    }
+  },
+  "capabilities": {
+    "core.git": {
+      "backends": [
+        {"kind": "runtime", "capability": "core.git", "host": "ios-native"},
+        {"kind": "host-tool", "tool": "git", "host": "ish-linux", "note": "Alpine git works locally; git-remote-http/curl helper is the runtime's job on device."}
+      ]
+    },
+    "core.search": {
+      "backends": [
+        {"kind": "runtime", "capability": "core.search", "host": "ios-native"},
+        {"kind": "host-tool", "tool": "rg", "host": "ish-linux", "note": "ripgrep is present in the minis sandbox; same CLI surface as the runtime's rg 15.2."}
+      ]
+    },
+    "core.http": {
+      "backends": [
+        {"kind": "runtime", "capability": "core.http", "host": "ios-native"},
+        {"kind": "host-tool", "tool": "curl", "host": "ish-linux", "note": "Sandbox curl speaks TLS; set --insecure only when a device image has no CA bundle."}
+      ]
+    },
+    "core.json": {
+      "backends": [
+        {"kind": "runtime", "capability": "core.json", "host": "ios-native"},
+        {"kind": "host-tool", "tool": "jq", "host": "ish-linux", "note": "jq is absent from the sandbox; scripts/jq is a python3 shim for the common filter subset."}
+      ]
+    },
+    "core.file": {
+      "backends": [
+        {"kind": "runtime", "capability": "core.file", "host": "ios-native"},
+        {"kind": "host-tool", "tool": "file", "host": "ish-linux", "note": "No file(1) in the sandbox; scripts/file reads Mach-O/ELF magic for the cases that matter."}
+      ]
+    },
+    "core.diff": {
+      "backends": [
+        {"kind": "runtime", "capability": "core.diff", "host": "ios-native"},
+        {"kind": "host-tool", "tool": "diff", "host": "ish-linux"}
+      ]
+    },
+    "core.patch": {
+      "backends": [
+        {"kind": "runtime", "capability": "core.patch", "host": "ios-native"},
+        {"kind": "host-tool", "tool": "patch", "host": "ish-linux", "note": "patch(1) is absent in the sandbox; the adapter's patch helper applies unified diffs in python."}
+      ]
+    },
+    "core.archive": {
+      "backends": [
+        {"kind": "runtime", "capability": "core.archive", "host": "ios-native"},
+        {"kind": "host-tool", "tool": "unzip", "host": "ish-linux", "note": "Extraction only; creation falls back to tar or python zipfile."}
+      ]
+    },
+    "node.javascript": {
+      "backends": [
+        {"kind": "runtime", "capability": "node.javascript", "host": "ios-native", "note": "NodeMobile.framework, JIT-less V8."},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "The sandbox has no node, and a Mach-O NodeMobile.framework cannot run there. Use the runtime on device, or python3 for scripting."}
+      ]
+    },
+    "node.packages": {
+      "backends": [
+        {"kind": "runtime", "capability": "node.packages", "host": "ios-native"},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "npm/npx/corepack need the NodeMobile runtime."}
+      ]
+    },
+    "node.fetch": {
+      "backends": [
+        {"kind": "runtime", "capability": "node.fetch", "host": "ios-native"},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "fetch shim lives inside lib/codex of the Node runtime."}
+      ]
+    },
+    "node.process": {
+      "backends": [
+        {"kind": "runtime", "capability": "node.process", "host": "ios-native"},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "CodexApp child_process adaptation is part of the Node runtime bootstrap."}
+      ]
+    },
+    "node.native-addon": {
+      "backends": [
+        {"kind": "runtime", "capability": "node.native-addon", "host": "ios-native", "note": "Requires the theos runtime for node-gyp/N-API signing."},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "Needs both NodeMobile and the iOS SDK toolchain."}
+      ]
+    },
+    "python.runtime": {
+      "backends": [
+        {"kind": "runtime", "capability": "python.runtime", "host": "ios-native"},
+        {"kind": "host-tool", "tool": "python3", "host": "ish-linux", "note": "Sandbox CPython 3.12 with ssl/sqlite3/hashlib/zlib; acceptable stand-in unless the managed 3.13 is required."}
+      ]
+    },
+    "python.stdlib": {
+      "backends": [
+        {"kind": "runtime", "capability": "python.stdlib", "host": "ios-native"},
+        {"kind": "host-tool", "tool": "python3", "host": "ish-linux"}
+      ]
+    },
+    "build.cmake": {
+      "backends": [
+        {"kind": "runtime", "capability": "build.cmake", "host": "ios-native"},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "cmake is not installed in the sandbox; the runtime's cmake is Mach-O."}
+      ]
+    },
+    "build.ninja": {
+      "backends": [
+        {"kind": "runtime", "capability": "build.ninja", "host": "ios-native"},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "ninja is not installed in the sandbox; the runtime's ninja is Mach-O."}
+      ]
+    },
+    "build.cmake-ios": {
+      "backends": [
+        {"kind": "runtime", "capability": "build.cmake-ios", "host": "ios-native"},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "Needs the runtime's cmake plus the theos iOS toolchain."}
+      ]
+    },
+    "ios.toolchain": {
+      "backends": [
+        {"kind": "runtime", "capability": "ios.toolchain", "host": "ios-native"},
+        {"kind": "minis-tool", "tool": "native_build", "host": "ios-native", "note": "minis compiles with its own on-device Theos toolchain; use native_build instead of a runtime theos tree."}
+      ]
+    },
+    "ios.compile": {
+      "backends": [
+        {"kind": "minis-tool", "tool": "native_build", "host": "ios-native", "note": "native_build(path, product=deb|dylib|ipaShell) runs make package with the on-device toolchain."},
+        {"kind": "runtime", "capability": "ios.compile", "host": "ios-native"}
+      ]
+    },
+    "ios.link": {
+      "backends": [
+        {"kind": "minis-tool", "tool": "native_build", "host": "ios-native"},
+        {"kind": "runtime", "capability": "ios.link", "host": "ios-native"}
+      ]
+    },
+    "ios.package": {
+      "backends": [
+        {"kind": "minis-tool", "tool": "native_build", "host": "ios-native", "note": "native_build emits a .deb with dpkg-deb from the on-device Theos runtime."},
+        {"kind": "runtime", "capability": "ios.package", "host": "ios-native"}
+      ]
+    },
+    "ios.package.rootful": {
+      "backends": [
+        {"kind": "minis-tool", "tool": "native_build", "host": "ios-native", "note": "scheme=rootful"},
+        {"kind": "runtime", "capability": "ios.package.rootful", "host": "ios-native"}
+      ]
+    },
+    "ios.package.rootless": {
+      "backends": [
+        {"kind": "minis-tool", "tool": "native_build", "host": "ios-native", "note": "scheme=rootless"},
+        {"kind": "runtime", "capability": "ios.package.rootless", "host": "ios-native"}
+      ]
+    },
+    "ios.package.roothide": {
+      "backends": [
+        {"kind": "minis-tool", "tool": "native_build", "host": "ios-native", "note": "scheme=roothide"},
+        {"kind": "runtime", "capability": "ios.package.roothide", "host": "ios-native"}
+      ]
+    },
+    "compiler.ollvm.frontend": {
+      "backends": [
+        {"kind": "minis-tool", "tool": "native_build", "host": "ios-native", "note": "native_build --obfuscation light|balanced|strong|paranoid|extreme"},
+        {"kind": "runtime", "capability": "compiler.ollvm.frontend", "host": "ios-native"}
+      ]
+    },
+    "compiler.ollvm.obfuscation": {
+      "backends": [
+        {"kind": "minis-tool", "tool": "native_build", "host": "ios-native", "note": "string encryption via encrypt_strings, symbol hiding via hide_symbols"}
+      ]
+    },
+    "compiler.ollvm.ios-artifact": {
+      "backends": [
+        {"kind": "minis-tool", "tool": "native_build", "host": "ios-native"}
+      ]
+    },
+    "reverse.inject": {
+      "backends": [
+        {"kind": "minis-tool", "tool": "native_build", "host": "ios-native", "note": "product=ipaShell injects the built dylib into a supplied .ipa."},
+        {"kind": "runtime", "capability": "reverse.inject", "host": "ios-native"}
+      ]
+    },
+    "reverse.macho": {
+      "backends": [
+        {"kind": "runtime", "capability": "reverse.macho", "host": "ios-native"},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "The mt-macho tooling is Mach-O; in the sandbox use the adapter's Mach-O magic/arch inspector for read-only checks."}
+      ]
+    },
+    "reverse.radare2": {
+      "backends": [
+        {"kind": "runtime", "capability": "reverse.radare2", "host": "ios-native"},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "radare2 is not installed in the sandbox."}
+      ]
+    },
+    "codex.cli": {
+      "backends": [
+        {"kind": "runtime", "capability": "codex.cli", "host": "ios-native"},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "The codex deb is iOS arm64. Inside minis the agent itself is the execution runtime; use the runtime on device for codex CLI work."}
+      ]
+    },
+    "codex.app-server": {
+      "backends": [
+        {"kind": "runtime", "capability": "codex.app-server", "host": "ios-native"},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "app-server speaks a local command/event transport owned by the app process."}
+      ]
+    },
+    "codex.code-mode": {
+      "backends": [
+        {"kind": "runtime", "capability": "codex.code-mode", "host": "ios-native"},
+        {"kind": "unavailable", "host": "ish-linux", "reason": "Code Mode host runtime is part of the codex deb."}
+      ]
+    }
+  }
+}
