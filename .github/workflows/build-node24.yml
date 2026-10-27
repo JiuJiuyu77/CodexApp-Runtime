@@ -210,6 +210,24 @@ jobs:
           fi
           echo "--- configure done ---"
 
+      - name: Adapt generated makefile for Mach-O
+        if: steps.cache-check.outputs.usable != 'true'
+        working-directory: node-src
+        run: |
+          set -euo pipefail
+          # gyp's make generator emits Linux-style linker groups in cmd_link
+          # regardless of flavor, and ld64 rejects them ("ld: unknown options:
+          # --start-group --end-group"). gyp itself strips these for wasm/wasi
+          # for the same reason; ld64 resolves archives order-independently, so
+          # dropping them is safe.
+          test -f out/Makefile
+          sed -i.bak -e 's/ -Wl,--start-group//g' -e 's/ -Wl,--end-group//g' out/Makefile
+          if grep -q -- "--start-group" out/Makefile; then
+            echo "::error::linker groups still present in out/Makefile" >&2
+            exit 1
+          fi
+          echo "removed Linux-style linker groups from out/Makefile"
+
       - name: Build Node
         if: steps.cache-check.outputs.usable != 'true'
         working-directory: node-src
