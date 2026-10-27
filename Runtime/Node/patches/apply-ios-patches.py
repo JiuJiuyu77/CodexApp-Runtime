@@ -81,7 +81,19 @@ patch(
     required=False,
 )
 
-# 3. V8's gypfiles pin a macOS target for host generators; the historic 10.10
+# 3. c-ares reuses the darwin config for iOS (cares.gyp: OS=="mac" or OS=="ios"),
+#    but iOS has no <sys/random.h>, so that include fails outright. iOS does
+#    provide arc4random_buf(), which the darwin config already enables, and
+#    HAVE_GETRANDOM is already undefined there, so dropping the header is enough
+#    to select the working backend.
+patch(
+    'deps/cares/config/darwin/ares_config.h',
+    '#define HAVE_SYS_RANDOM_H 1',
+    '/* #undef HAVE_SYS_RANDOM_H -- iOS has no <sys/random.h>; use arc4random_buf */',
+    'cares: drop sys/random.h on ios',
+)
+
+# 4. V8's gypfiles pin a macOS target for host generators; the historic 10.10
 #    value is rejected by current SDKs.
 patch(
     'tools/v8_gypfiles/toolchain.gypi',
@@ -91,7 +103,7 @@ patch(
     required=False,
 )
 
-# 4. Node 24's common.gypi has no iOS block: the darwin settings (including the
+# 5. Node 24's common.gypi has no iOS block: the darwin settings (including the
 #    gnu++20 language standard Node 24 requires) live in the OS=="mac" block.
 #    Mirror it for iOS, otherwise the target silently compiles as C++17 and
 #    against macOS defaults.
