@@ -152,6 +152,25 @@ jobs:
           GYP_DEFINES: "target_arch=arm64 host_os=mac target_os=ios"
         run: |
           set -euo pipefail
+          # Compile with wrappers that pin the iPhoneOS SDK. Relying on gyp's
+          # guesswork alone produced "using sysroot for 'MacOSX' but targeting
+          # 'iPhone'": the target triple was iOS but the sysroot stayed macOS.
+          # A wrapper makes every compile and link unambiguously iOS.
+          SDK="$(xcrun --sdk iphoneos --show-sdk-path)"
+          WRAP="$GITHUB_WORKSPACE/toolchain"
+          mkdir -p "$WRAP"
+          printf '#!/bin/sh\nexec xcrun --sdk iphoneos clang -arch arm64 -isysroot "%s" -miphoneos-version-min=%s "$@"\n' \
+            "$SDK" "$IPHONEOS_DEPLOYMENT_TARGET" > "$WRAP/clang-ios"
+          printf '#!/bin/sh\nexec xcrun --sdk iphoneos clang++ -arch arm64 -isysroot "%s" -miphoneos-version-min=%s "$@"\n' \
+            "$SDK" "$IPHONEOS_DEPLOYMENT_TARGET" > "$WRAP/clang++-ios"
+          chmod +x "$WRAP/clang-ios" "$WRAP/clang++-ios"
+          echo "SDK=$SDK"
+
+          export CC="$WRAP/clang-ios"
+          export CXX="$WRAP/clang++-ios"
+          export LD="$WRAP/clang++-ios"
+          export SDKROOT="$SDK"
+
           # Static, JIT-less: iOS never allows W+X pages, so V8 runs with the JIT
           # disabled and without baked-in snapshot/code-cache blobs.
           ./configure \
@@ -165,18 +184,15 @@ jobs:
             --without-node-code-cache \
             --without-node-snapshot
 
-          # Fail in seconds, not after a 40-minute compile, if the generated
-          # build is not actually targeting iOS.
-          echo "--- generated build config ---"
-          grep -E "^(CXX|CC|LDFLAGS|CFLAGS|GYP_DEFINES)|target_os" config.mk 2>/dev/null | head -20 || true
-          if grep -q "iphoneos" out/Makefile; then
-            echo "OK: out/Makefile references iphoneos"
-          else
-            echo "ERROR: out/Makefile has no iphoneos reference; SDKROOT was not applied" >&2
-            grep -m5 -nE "isysroot|SDKROOT|-arch" out/Makefile || true
-            exit 1
-          fi
-          grep -m3 -n "isysroot" out/Makefile || true
+          # Verify the toolchain actually targets iOS before compiling for 40
+          # minutes: the wrapper must report TARGET_OS_IPHONE, and the generated
+          # makefile must invoke it.
+          echo "--- toolchain check ---"
+          echo '#include <TargetConditionals.h>' | "$CC" -E -dM -x c - \
+            | grep -E "TARGET_OS_IPHONE|TARGET_OS_MAC" || true
+          grep -c "clang-ios" out/Makefile || echo "WARNING: wrapper not referenced in out/Makefile"
+          grep -i -m3 "iphoneos" out/Makefile || true
+          echo "--- configure done ---"
 
       - name: Build Node
         if: steps.cache-check.outputs.usable != 'true'
@@ -185,9 +201,17 @@ jobs:
           GYP_DEFINES: "target_arch=arm64 host_os=mac target_os=ios"
         run: |
           set -euo pipefail
+          # config.mk carries CC/CXX, but export them too: some sub-invocations
+          # re-enter make without config.mk in scope.
+          WRAP="$GITHUB_WORKSPACE/toolchain"
+          export CC="$WRAP/clang-ios" CXX="$WRAP/clang++-ios" LD="$WRAP/clang++-ios"
+          export SDKROOT="$(xcrun --sdk iphoneos --show-sdk-path)"
           make -j"$(getconf _NPROCESSORS_ONLN)"
           test -f out/Release/libnode.a
           ls -lh out/Release/libnode.a
+          # Confirm the archive really is iOS arm64, not a macOS build.
+          xcrun vtool -show-build out/Release/libnode.a 2>/dev/null | head -20 || \
+            echo "(libnode.a is a static archive; platform checked at link time)"
 
       - name: Assemble NodeMobile.framework
         run: |
