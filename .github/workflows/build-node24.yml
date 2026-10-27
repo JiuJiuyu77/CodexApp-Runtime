@@ -244,10 +244,23 @@ jobs:
           export CC="$WRAP/clang-ios" CXX="$WRAP/clang++-ios" LD="$WRAP/clang++-ios"
           export SDKROOT="$(xcrun --sdk iphoneos --show-sdk-path)"
 
+          # Build-time code generators (node_js2c, torque, gen_node_def, ...) are
+          # declared with 'toolsets': ['host'] because they must RUN during the
+          # build. Without these overrides they inherit the iOS wrapper and
+          # become arm64 iOS binaries, which the x86_64 runner cannot execute
+          # ("Bad CPU type in executable"). The makefile's CC.host etc. use ?=,
+          # so command-line assignments win.
+          HOST_CC="xcrun --sdk macosx clang"
+          HOST_CXX="xcrun --sdk macosx clang++ -std=gnu++20"
+
           # Capture the full log; a 40-minute native build is unusable if the
           # failure scrolls out of the Actions viewer.
           set +e
-          make -j"$(getconf _NPROCESSORS_ONLN)" > build.log 2>&1
+          make -j"$(getconf _NPROCESSORS_ONLN)" \
+            CC.host="$HOST_CC" \
+            CXX.host="$HOST_CXX" \
+            LINK.host="$HOST_CXX" \
+            > build.log 2>&1
           MAKE_RC=$?
           set -e
           tail -60 build.log
@@ -267,6 +280,8 @@ jobs:
 
           test -f out/Release/libnode.a
           ls -lh out/Release/libnode.a
+          echo "--- host code generators (must run on the runner) ---"
+          file out/Release/node_js2c 2>/dev/null || true
           echo "--- archives produced ---"
           ls out/Release/*.a | head -30
 
