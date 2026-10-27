@@ -98,35 +98,55 @@ jobs:
           brew install ldid || true
           command -v ldid && ldid -h | head -2 || echo "ldid unavailable; artifacts stay unsigned"
 
-      # libnode.a is a long compile; cache the configured+build tree so a rerun
-      # after a late-step failure costs a minute instead of an hour.
-      - name: Cache Node build
+      # libnode.a is a long compile, so cache the configured+build tree. Restore
+      # and save are separate on purpose: actions/cache saves even on failure,
+      # which would let a half-built tree poison the next run. Saving only after
+      # a successful build keeps the cache honest.
+      - name: Restore Node build cache
         id: node-cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: node-src
           key: node24-${{ env.NODE_VERSION }}-${{ runner.arch }}-sdk${{ steps.xcode.outputs.sdk }}-${{ hashFiles('Runtime/Node/patches/**') }}
 
-      - name: Fetch Node.js source
-        if: steps.node-cache.outputs.cache-hit != 'true'
+      - name: Validate restored cache
+        id: cache-check
         run: |
           set -euo pipefail
-          rm -rf node-src "node-v${NODE_VERSION}" node.tar.xz
-          curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}.tar.xz" -o node.tar.xz
+          if [ "${{ steps.node-cache.outputs.cache-hit }}" = "true" ] && \
+             [ -f node-src/out/Release/libnode.a ]; then
+            echo "usable=true" >> "$GITHUB_OUTPUT"
+            echo "reusing cached build ($(ls -lh node-src/out/Release/libnode.a | awk '{print $5}'))"
+          else
+            echo "usable=false" >> "$GITHUB_OUTPUT"
+            echo "no usable cache; performing a full build"
+            rm -rf node-src
+          fi
+
+      - name: Fetch Node.js source
+        if: steps.cache-check.outputs.usable != 'true'
+        run: |
+          set -euo pipefail
+          TARBALL="node-v${NODE_VERSION}.tar.xz"
+          rm -rf node-src "node-v${NODE_VERSION}" "$TARBALL"
+          curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/${TARBALL}" -o "$TARBALL"
           curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/SHASUMS256.txt" -o SHASUMS256.txt
-          grep " node-v${NODE_VERSION}.tar.xz\$" SHASUMS256.txt | shasum -a 256 -c -
-          tar -xf node.tar.xz
+          # Verify before unpacking: the checksum file names the canonical
+          # tarball, so the file must be saved under exactly that name.
+          grep " ${TARBALL}\$" SHASUMS256.txt | shasum -a 256 -c -
+          tar -xf "$TARBALL"
           mv "node-v${NODE_VERSION}" node-src
+          rm -f "$TARBALL"
           echo "source ready"
 
       - name: Apply iOS patches
-        if: steps.node-cache.outputs.cache-hit != 'true'
+        if: steps.cache-check.outputs.usable != 'true'
         run: |
           set -euo pipefail
           python3 Runtime/Node/patches/apply-ios-patches.py node-src
 
       - name: Configure Node for iOS arm64
-        if: steps.node-cache.outputs.cache-hit != 'true'
+        if: steps.cache-check.outputs.usable != 'true'
         working-directory: node-src
         env:
           GYP_DEFINES: "target_arch=arm64 host_os=mac target_os=ios"
@@ -145,8 +165,21 @@ jobs:
             --without-node-code-cache \
             --without-node-snapshot
 
+          # Fail in seconds, not after a 40-minute compile, if the generated
+          # build is not actually targeting iOS.
+          echo "--- generated build config ---"
+          grep -E "^(CXX|CC|LDFLAGS|CFLAGS|GYP_DEFINES)|target_os" config.mk 2>/dev/null | head -20 || true
+          if grep -q "iphoneos" out/Makefile; then
+            echo "OK: out/Makefile references iphoneos"
+          else
+            echo "ERROR: out/Makefile has no iphoneos reference; SDKROOT was not applied" >&2
+            grep -m5 -nE "isysroot|SDKROOT|-arch" out/Makefile || true
+            exit 1
+          fi
+          grep -m3 -n "isysroot" out/Makefile || true
+
       - name: Build Node
-        if: steps.node-cache.outputs.cache-hit != 'true'
+        if: steps.cache-check.outputs.usable != 'true'
         working-directory: node-src
         env:
           GYP_DEFINES: "target_arch=arm64 host_os=mac target_os=ios"
@@ -315,14 +348,9 @@ jobs:
           R="$RUNTIME_DIR"
           OUT="$RUNNER_TEMP/out"; rm -rf "$OUT"; mkdir -p "$OUT"
 
-          # Deterministic archive: sorted entries, zeroed owner/mtime so that an
+          # Deterministic archive: pinned owner/mtime and sorted entries, so an
           # unchanged tree always produces an identical digest.
-          ( cd "$R" && find . -mindepth 1 | LC_ALL=C sort | \
-              tar --format=gnu --no-recursion -T - \
-                  --owner=0 --group=0 --numeric-owner \
-                  --mtime='@0' -cf "$OUT/NodeRuntime.tar" )
-          gzip -9n -c "$OUT/NodeRuntime.tar" > "$OUT/NodeRuntime.tar.gz"
-          rm -f "$OUT/NodeRuntime.tar"
+          python3 Runtime/Node/scripts/make-archive.py "$R" "$OUT/NodeRuntime.tar.gz"
           ls -lh "$OUT/NodeRuntime.tar.gz"
 
           SHA="$(shasum -a 256 "$OUT/NodeRuntime.tar.gz" | cut -d' ' -f1)"
@@ -375,6 +403,13 @@ jobs:
             "$RUNNER_TEMP"/out/NodeRuntime.tar.gz \
             "$RUNNER_TEMP"/out/NodeRuntime.bundle.json \
             --repo "$GITHUB_REPOSITORY" --clobber
+
+      - name: Save Node build cache
+        if: success() && steps.cache-check.outputs.usable != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: node-src
+          key: ${{ steps.node-cache.outputs.cache-primary-key }}
 
       - name: Summary
         run: |
