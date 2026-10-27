@@ -50,7 +50,8 @@ re-implement that logic.
 | `core.json/file/patch` | bundled shims (`jq`, `file`, `patch`) — the sandbox ships none of them |
 | `python.*` | sandbox `python3` unless the managed 3.13 is required |
 | `ios.*`, `compiler.ollvm.*`, `reverse.inject` | `native_build` |
-| `node.*`, `build.*`, `reverse.macho`, `reverse.radare2`, `codex.*` | runtime on device only; impossible in the sandbox |
+| `node.*`, `build.*`, `reverse.macho`, `reverse.radare2` | runtime on device only; impossible in the sandbox |
+| `codex.*` | **not adopted** — minis ships its own agent architecture and filters `handler == "codex"` out of the runtime list entirely |
 
 `node` trees are still worth installing in the sandbox: the digest and
 `required_paths` checks prove a release is complete, and the payload (headers,
