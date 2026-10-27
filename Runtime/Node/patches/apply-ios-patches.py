@@ -93,7 +93,46 @@ patch(
     'cares: drop sys/random.h on ios',
 )
 
-# 4. V8's gypfiles pin a macOS target for host generators; the historic 10.10
+# 5. src/crypto/crypto_context.cc applies macOS trust-settings overrides to the
+#    certificates it reads from the keychain. The kSecTrustSettings* constants
+#    and SecTrustSettingsCopyTrustSettings do not exist on iOS, so that logic
+#    cannot compile there. Exclude it, keep gathering keychain anchors, and skip
+#    the trust override (which does not exist in the iOS trust model).
+CRYPTO_CC = 'src/crypto/crypto_context.cc'
+patch(
+    CRYPTO_CC,
+    """#ifdef __APPLE__
+TrustStatus IsTrustDictionaryTrustedForPolicy(CFDictionaryRef trust_dict,""",
+    """#ifdef __APPLE__
+// iOS has no SecTrustSettings API: the trust-override logic below is macOS-only.
+#if !defined(TARGET_OS_IPHONE) || !TARGET_OS_IPHONE
+TrustStatus IsTrustDictionaryTrustedForPolicy(CFDictionaryRef trust_dict,""",
+    'crypto: exclude macOS trust-settings helpers on ios',
+)
+patch(
+    CRYPTO_CC,
+    """void ReadMacOSKeychainCertificates(
+    std::vector<X509*>* system_root_certificates_X509) {""",
+    """#endif  // !defined(TARGET_OS_IPHONE) || !TARGET_OS_IPHONE
+
+void ReadMacOSKeychainCertificates(
+    std::vector<X509*>* system_root_certificates_X509) {""",
+    'crypto: close trust-settings guard before keychain reader',
+)
+patch(
+    CRYPTO_CC,
+    '    bool is_valid = IsCertificateTrustedForPolicy(cert, cert_ref);',
+    """#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    // No SecTrustSettings on iOS, so there is no per-certificate override to
+    // apply; the chain itself is still verified by the caller.
+    bool is_valid = true;
+#else
+    bool is_valid = IsCertificateTrustedForPolicy(cert, cert_ref);
+#endif""",
+    'crypto: skip trust override on ios',
+)
+
+# 6. V8's gypfiles pin a macOS target for host generators; the historic 10.10
 #    value is rejected by current SDKs.
 patch(
     'tools/v8_gypfiles/toolchain.gypi',
