@@ -175,7 +175,8 @@ jobs:
           export CC="$WRAP/clang-ios"
           export CXX="$WRAP/clang++-ios"
           export LD="$WRAP/clang++-ios"
-          export SDKROOT="$SDK"
+          # SDKROOT is intentionally not exported: clang reads it from the
+          # environment, and the iOS wrapper already passes -isysroot explicitly.
 
           # Static, JIT-less: iOS never allows W+X pages, so V8 runs with the JIT
           # disabled and without baked-in snapshot/code-cache blobs.
@@ -242,7 +243,7 @@ jobs:
           # re-enter make without config.mk in scope.
           WRAP="$GITHUB_WORKSPACE/toolchain"
           export CC="$WRAP/clang-ios" CXX="$WRAP/clang++-ios" LD="$WRAP/clang++-ios"
-          export SDKROOT="$(xcrun --sdk iphoneos --show-sdk-path)"
+          # not exporting SDKROOT; see the host wrapper, which scrubs it
 
           # Build-time code generators (node_js2c, torque, gen_node_def, ...) are
           # declared with 'toolsets': ['host'] because they must RUN during the
