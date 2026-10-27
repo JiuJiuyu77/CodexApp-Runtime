@@ -136,8 +136,8 @@
       "version": "v0.162.1-4"
     },
     "core_tools": {
-      "archive_sha256": "80f9fd75858122644e1d15b8d65068604dafb5875c33c3b72e4ea915895dde98",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-d16eac405af9/CoreToolsRuntime.tar.gz",
+      "archive_sha256": "bc6d2a761667f269f84edd75505fbc6e2122207bc4156ad55c485df8a576efa2",
+      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-0b27a4626c41/CoreToolsRuntime.tar.gz",
       "capabilities": {
         "core.archive": {
           "summary": "zip/unzip creation, listing and extraction.",
@@ -181,7 +181,7 @@
       },
       "conflicts": [],
       "display_name": "CoreTools",
-      "download_size": 9921540,
+      "download_size": 9921449,
       "group": "tools",
       "handler": "portable-v1",
       "install": {
@@ -218,7 +218,7 @@
           "bin/ca-coretools"
         ]
       },
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-d16eac405af9/CoreToolsRuntime.bundle.json",
+      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-0b27a4626c41/CoreToolsRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": false,
       "order": 5,
@@ -234,7 +234,7 @@
       ],
       "recommends": [],
       "requires": [],
-      "revision": "d16eac405af9a33944020144909c84109c7142b00192e0d139f8cd8e9cdcc600",
+      "revision": "0b27a4626c4105bab02b3331c62d18882842cc2b75d03a553e6acda0c41dfe07",
       "runtime_format": 1,
       "summary": "CodexApp 基础开发工具：Git、HTTPS remote helper、ripgrep、curl、jq，以及 file/diff/patch/zip/unzip。",
       "ui": {
@@ -242,7 +242,7 @@
         "tint": "teal"
       },
       "unpacked_size": 23899865,
-      "version": "runtime-core-tools-d16eac405af9"
+      "version": "runtime-core-tools-0b27a4626c41"
     },
     "node": {
       "archive_sha256": "b89a471029b5cd8256a4a321e76180e6dcf7c137831955cb98a874d47210e2b3",
