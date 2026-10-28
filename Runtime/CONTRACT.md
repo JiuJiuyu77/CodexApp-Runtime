@@ -105,6 +105,30 @@ schemes `rootful`/`rootless`/`roothide` through `THEOS_PACKAGE_SCHEME`. It provi
 the toolchain that `node.native-addon`, `build.cmake-ios`, `compiler.ollvm.*` and
 app packaging depend on.
 
+## Bundle-level `manifest.json`
+
+每个运行时树根上还有一份**自带的** `manifest.json`，与这里的中央清单不是一回事：
+
+| 字段 | 含义 |
+| --- | --- |
+| `sign_paths` | 该树里需要签名的 Mach-O 长名单（python 70 条：`python3`、`Python.framework/Python` + 68 个 extension framework；reverse_tools 9 条；theos 逐个 bin） |
+| `runner` / `aliases` / `platform` / `format` | 该运行时的入口与布局版本 |
+| `components` / `*_version` / `revision` | 组件版本，便于诊断页显示 |
+
+中央清单不复制这些长名单（会被手改漏掉），消费者应**优先读 `install.sign_paths`，
+为空则回退读树根的 `manifest.json`**。minis 的 `RuntimeInstallSpec.signTargets(in:)`
+就是这么做的：漏掉回退就会出现「装了但一个都没签」→ 执行时 `Bad executable`。
+
+## 自托管
+
+`archive_url` / `metadata_url` 指向本仓库自己的 releases
+（`https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/<tag>/<asset>`），
+不再依赖上游 `susu123oss/CodexApp-Runtime`。8 个资产的 `size` 与 `sha256` 与上游逐字节一致
+（29 个 release / 66 个资产已镜像到本仓库），因此迁移只换了 URL。
+
+`Runtime/minis/tools/runtime_adapter.py verify-releases` 会把清单与已发布资产逐条比对，
+CI 每天跑一次：归档被重打而清单没更新时，在这里红，而不是等到设备上下载校验失败。
+
 ## Consumers
 
 - CodexApp itself (the primary installer).
