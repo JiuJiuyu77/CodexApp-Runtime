@@ -26,6 +26,7 @@ CI, and on the device.
 A="python3 Runtime/minis/tools/runtime_adapter.py --manifest Runtime/runtime-manifest.json"
 
 $A verify-manifest                     # structural gate (see CI)
+$A verify-releases                     # manifest digests vs published assets
 $A list                                # versions, handlers, runnable_here
 $A plan codex.cli --with-recommends    # resolve requires/recommends
 $A install core_tools --dest ~/.codexapp/runtimes
@@ -69,6 +70,9 @@ sdks, shims) is inspectable even though nothing can exec.
    provider breaks the build.
 3. `coverage` — every capability the manifest provides must be described by
    `minis-runtime-map.json`.
+4. `verify-releases` — each entry's `archive_sha256` / `download_size` must match
+   the asset actually published on this repository's releases (API only, no
+   payload download), so a rebuilt archive cannot silently diverge from the JSON.
 
 Warnings (missing `revision`/`minimum_ios`, absent `install` for app-native
 handlers) are tolerated but reported, so a new release can be published first and

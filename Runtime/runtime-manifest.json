@@ -6,7 +6,7 @@
   "runtimes": {
     "build_tools": {
       "archive_sha256": "8e48719bafeafdab712d9d261e549b63e30443f5d0e43d839df17088d407ac14",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-build-tools-3.27.9-a7141408c23f/BuildToolsRuntime.tar.gz",
+      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-build-tools-3.27.9-a7141408c23f/BuildToolsRuntime.tar.gz",
       "capabilities": {
         "build.cmake": {
           "summary": "Configure and generate C/C++ build trees with CMake 3.27.9.",
@@ -60,7 +60,7 @@
           "bin/ninja"
         ]
       },
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-build-tools-3.27.9-a7141408c23f/BuildToolsRuntime.bundle.json",
+      "metadata_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-build-tools-3.27.9-a7141408c23f/BuildToolsRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": true,
       "order": 15,
@@ -89,7 +89,7 @@
     },
     "codex": {
       "archive_sha256": "b1ef47cb6e1f0a378409f123f7bb3422b6dcaf3e69164d70709d146ad7f12155",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-codex-v0.162.1-4/wiki.qaq.codex_0.162.1-4_iphoneos-arm64.deb",
+      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-codex-v0.162.1-4/wiki.qaq.codex_0.162.1-4_iphoneos-arm64.deb",
       "asset_name": "wiki.qaq.codex_0.162.1-4_iphoneos-arm64.deb",
       "capabilities": {
         "codex.app-server": {
@@ -137,7 +137,7 @@
     },
     "core_tools": {
       "archive_sha256": "bc6d2a761667f269f84edd75505fbc6e2122207bc4156ad55c485df8a576efa2",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-0b27a4626c41/CoreToolsRuntime.tar.gz",
+      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-core-tools-0b27a4626c41/CoreToolsRuntime.tar.gz",
       "capabilities": {
         "core.archive": {
           "summary": "zip/unzip creation, listing and extraction.",
@@ -218,7 +218,7 @@
           "bin/ca-coretools"
         ]
       },
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-core-tools-0b27a4626c41/CoreToolsRuntime.bundle.json",
+      "metadata_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-core-tools-0b27a4626c41/CoreToolsRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": false,
       "order": 5,
@@ -246,7 +246,7 @@
     },
     "node": {
       "archive_sha256": "b89a471029b5cd8256a4a321e76180e6dcf7c137831955cb98a874d47210e2b3",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-f38613c172c3/NodeRuntime.tar.gz",
+      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-node-18.20.4-f38613c172c3/NodeRuntime.tar.gz",
       "capabilities": {
         "node.fetch": {
           "summary": "iOS-compatible global fetch path.",
@@ -344,7 +344,7 @@
           "Frameworks/NodeMobile.framework/NodeMobile"
         ]
       },
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-node-18.20.4-f38613c172c3/NodeRuntime.bundle.json",
+      "metadata_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-node-18.20.4-f38613c172c3/NodeRuntime.bundle.json",
       "minimum_ios": "15.0",
       "node_version": "18.20.4",
       "npm_version": "10.7.0",
@@ -378,7 +378,7 @@
     },
     "ollvm": {
       "archive_sha256": "db77403a4290caec4d377d7880ceda5d32b32d7eeaad7b528493ea50214be33d",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.tar.gz",
+      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.tar.gz",
       "capabilities": {
         "compiler.ollvm.frontend": {
           "summary": "Arkari LLVM 16 clang/clang++ frontend.",
@@ -431,7 +431,7 @@
         ]
       },
       "llvm_version": "16.0.6",
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.bundle.json",
+      "metadata_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": true,
       "order": 30,
@@ -525,7 +525,7 @@
     },
     "python": {
       "archive_sha256": "6c5cd14ad7354cef321ab666c984f5f036317197e63f88589f24d3a705e2996c",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-python-3.13.14-b04613a42bae/PythonRuntime.tar.gz",
+      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-python-3.13.14-b04613a42bae/PythonRuntime.tar.gz",
       "capabilities": {
         "python.runtime": {
           "summary": "Managed CPython 3.13 runtime.",
@@ -541,7 +541,25 @@
       "download_size": 8957861,
       "group": "tools",
       "handler": "python",
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-python-3.13.14-b04613a42bae/PythonRuntime.bundle.json",
+      "install": {
+        "path_entries": [
+          "."
+        ],
+        "probe": {
+          "arguments": [
+            "--version"
+          ],
+          "contains": "Python 3.13",
+          "executable": "python3"
+        },
+        "required_paths": [
+          "python3",
+          "Python.framework/Python",
+          "PythonHome/lib/python3.13/os.py"
+        ],
+        "sign_paths": []
+      },
+      "metadata_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-python-3.13.14-b04613a42bae/PythonRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": true,
       "order": 20,
@@ -564,7 +582,7 @@
     },
     "reverse_tools": {
       "archive_sha256": "5a861b1f0220de591b4d500e9eec5b6bc054efdb6964e8d569de9e096f96f801",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-9d3ca9ea3340/ReverseToolsRuntime.tar.gz",
+      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-reverse-tools-9d3ca9ea3340/ReverseToolsRuntime.tar.gz",
       "capabilities": {
         "reverse.inject": {
           "summary": "Add a dylib load command to supported Mach-O files before re-signing.",
@@ -608,8 +626,27 @@
       "download_size": 17376078,
       "group": "tools",
       "handler": "reverse_tools",
+      "install": {
+        "path_entries": [
+          "bin"
+        ],
+        "probe": {
+          "arguments": [
+            "-v"
+          ],
+          "contains": "radare2",
+          "executable": "bin/radare2"
+        },
+        "required_paths": [
+          "bin/radare2",
+          "bin/rabin2",
+          "bin/mt-macho",
+          "bin/mt-rev"
+        ],
+        "sign_paths": []
+      },
       "ipsw_ref": null,
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-reverse-tools-9d3ca9ea3340/ReverseToolsRuntime.bundle.json",
+      "metadata_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-reverse-tools-9d3ca9ea3340/ReverseToolsRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": true,
       "order": 10,
@@ -634,7 +671,7 @@
     },
     "theos": {
       "archive_sha256": "f43509589e98549670b21a9b078bd2a541531d327ab954eb8b1915a12042ce3d",
-      "archive_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-336408a626ac/TheosRuntime.tar.gz",
+      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-theos-336408a626ac/TheosRuntime.tar.gz",
       "capabilities": {
         "ios.compile": {
           "summary": "Compile C/C++/Objective-C sources against the bundled iPhoneOS SDK.",
@@ -671,7 +708,52 @@
       "download_size": 224552345,
       "group": "compiler",
       "handler": "theos",
-      "metadata_url": "https://github.com/susu123oss/CodexApp-Runtime/releases/download/runtime-theos-336408a626ac/TheosRuntime.bundle.json",
+      "install": {
+        "environment": {
+          "CA_THEOS_BASH": "${RUNTIME_ROOT}/usr/bin/zsh",
+          "CA_THEOS_CLANG": "${RUNTIME_ROOT}/usr/lib/llvm-16/bin/clang",
+          "CA_THEOS_CLANGXX": "${RUNTIME_ROOT}/usr/lib/llvm-16/bin/clang++",
+          "CA_THEOS_MAKE": "${RUNTIME_ROOT}/usr/bin/make",
+          "CA_THEOS_SDKROOT": "${RUNTIME_ROOT}/theos/sdks/iPhoneOS16.5.sdk",
+          "THEOS": "${RUNTIME_ROOT}/theos"
+        },
+        "path_entries": [
+          "usr/bin"
+        ],
+        "probe": {
+          "arguments": [
+            "--version"
+          ],
+          "contains": "GNU Make",
+          "executable": "usr/bin/make"
+        },
+        "required_paths": [
+          "usr/bin/make",
+          "usr/bin/zsh",
+          "usr/bin/ldid",
+          "usr/bin/ld64",
+          "usr/bin/dpkg-deb",
+          "usr/lib/llvm-16/bin/clang",
+          "usr/lib/llvm-16/bin/clang++",
+          "theos/makefiles/common.mk",
+          "theos/sdks/iPhoneOS16.5.sdk/SDKSettings.plist"
+        ],
+        "sign_paths": [
+          "usr/bin/make",
+          "usr/bin/zsh",
+          "usr/bin/ldid",
+          "usr/bin/ld64",
+          "usr/bin/dpkg-deb",
+          "usr/lib/llvm-16/bin/clang",
+          "usr/lib/llvm-16/bin/clang++"
+        ],
+        "sign_paths_without_entitlements": [
+          "usr/lib/llvm-16/bin/clang",
+          "usr/lib/llvm-16/bin/clang++"
+        ]
+      },
+      "metadata_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-theos-336408a626ac/TheosRuntime.bundle.json",
+      "minimum_ios": "15.0",
       "optional": true,
       "order": 20,
       "package_schemes": [

@@ -565,6 +565,58 @@ def _all_capabilities(runtimes):
 
 
 # --------------------------------------------------------------------------- #
+# release digest check
+# --------------------------------------------------------------------------- #
+
+def verify_releases(manifest, token=None, timeout=60):
+    """Compare each manifest entry with the asset actually published.
+
+    The manifest is hand-merged and the archives are rebuilt out of band, so
+    "the digest in the JSON" and "the bytes in the release" drift silently —
+    every device would then fail the download check at install time instead of
+    CI failing here. Reads the GitHub API (public repos need no token, but a
+    token lifts the rate limit) and never downloads the payloads.
+    """
+    import urllib.request
+
+    results = []
+    for runtime_id, runtime in sorted(manifest.get("runtimes", {}).items()):
+        url = runtime.get("archive_url") or ""
+        parts = url.split("/releases/download/")
+        if len(parts) != 2:
+            results.append({"id": runtime_id, "ok": False, "reason": "archive_url is not a release asset"})
+            continue
+        owner_repo = parts[0].rstrip("/").split("/")[-2:]
+        tag_and_asset = parts[1].split("/")
+        tag, asset = tag_and_asset[0], tag_and_asset[-1]
+        api = "https://api.github.com/repos/%s/releases/tags/%s" % ("/".join(owner_repo), tag)
+        headers = {"Accept": "application/vnd.github+json", "User-Agent": "runtime-adapter/1"}
+        if token:
+            headers["Authorization"] = "Bearer " + token
+        try:
+            request = urllib.request.Request(api, headers=headers)
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                release = json.loads(response.read().decode("utf-8"))
+        except Exception as error:  # noqa: BLE001
+            results.append({"id": runtime_id, "ok": False, "reason": "release lookup failed: %s" % error})
+            continue
+        assets = {a["name"]: a for a in release.get("assets") or []}
+        published = assets.get(asset)
+        if not published:
+            results.append({"id": runtime_id, "ok": False,
+                            "reason": "asset %s missing from %s" % (asset, tag)})
+            continue
+        digest = (published.get("digest") or "").replace("sha256:", "")
+        size_ok = runtime.get("download_size") in (None, published.get("size"))
+        digest_ok = (not digest) or digest == runtime.get("archive_sha256")
+        results.append({"id": runtime_id, "ok": bool(size_ok and digest_ok),
+                        "tag": tag, "asset": asset,
+                        "size": published.get("size"), "sha256": digest,
+                        "reason": None if (size_ok and digest_ok) else "digest or size differs"})
+    return results
+
+
+# --------------------------------------------------------------------------- #
 # doctor
 # --------------------------------------------------------------------------- #
 
@@ -608,6 +660,10 @@ def main(argv=None):
     add_json(_p)
     _p = sub.add_parser("verify-manifest", help="validate manifest structure (CI)")
     add_json(_p)
+
+    releases = sub.add_parser("verify-releases", help="compare entries with published assets (CI)")
+    releases.add_argument("--token", default=os.environ.get("GITHUB_TOKEN"),
+                          help="GitHub token (optional, lifts the API rate limit)")
 
     plan = sub.add_parser("plan", help="resolve capabilities to runtimes")
     add_json(plan)
@@ -680,6 +736,17 @@ def main(argv=None):
                 print("%-3s %-14s %-22s %-14s %s" % (flag, row["id"], row["version"],
                                                      row["handler"], ",".join(row["provides"])))
         return 0
+
+    if args.command == "verify-releases":
+        results = verify_releases(manifest, token=args.token)
+        if args.json:
+            print(json.dumps(results, indent=2, ensure_ascii=False))
+        else:
+            for row in results:
+                print("%s %-14s %s%s" % ("ok  " if row["ok"] else "FAIL", row["id"],
+                                         row.get("sha256", "")[:12] or "-",
+                                         ("  " + row["reason"]) if row.get("reason") else ""))
+        return 0 if all(row["ok"] for row in results) else 1
 
     if args.command == "plan":
         result = resolve(manifest, args.want, with_recommends=args.with_recommends)

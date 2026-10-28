@@ -70,6 +70,11 @@ jobs:
           compiler.ollvm.frontend compiler.ollvm.obfuscation compiler.ollvm.ios-artifact
           PLANS
 
+      - name: Manifest matches the published release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 Runtime/minis/tools/runtime_adapter.py --manifest "$MANIFEST" verify-releases
+
       - name: minis router covers every provided capability
         run: python3 Runtime/minis/tools/capability_router.py --manifest "$MANIFEST" coverage
 
