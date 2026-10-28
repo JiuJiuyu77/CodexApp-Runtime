@@ -111,13 +111,15 @@ TrustStatus IsTrustDictionaryTrustedForPolicy(CFDictionaryRef trust_dict,""",
 )
 patch(
     CRYPTO_CC,
-    """void ReadMacOSKeychainCertificates(
-    std::vector<X509*>* system_root_certificates_X509) {""",
+    """// Checks if a certificate has expired.
+// Returns true if the certificate's notAfter date is in the past.
+static bool IsCertificateExpired(X509* cert) {""",
     """#endif  // !defined(TARGET_OS_IPHONE) || !TARGET_OS_IPHONE
 
-void ReadMacOSKeychainCertificates(
-    std::vector<X509*>* system_root_certificates_X509) {""",
-    'crypto: close trust-settings guard before keychain reader',
+// Checks if a certificate has expired.
+// Returns true if the certificate's notAfter date is in the past.
+static bool IsCertificateExpired(X509* cert) {""",
+    'crypto: close trust-settings guard before expiry helper',
 )
 patch(
     CRYPTO_CC,
