@@ -1,0 +1,4 @@
+# Locally staged upstream runtime release assets; GitHub Actions mirrors these
+# directly from the source release, so the large binaries are not committed.
+releases/node-24.5.0/
+releases/ollvm-23.1.1/

@@ -245,15 +245,15 @@
       "version": "runtime-core-tools-0b27a4626c41"
     },
     "node": {
-      "archive_sha256": "b89a471029b5cd8256a4a321e76180e6dcf7c137831955cb98a874d47210e2b3",
-      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-node-18.20.4-f38613c172c3/NodeRuntime.tar.gz",
+      "archive_sha256": "267278d0baafac4ba2ba4a0afee65f213bb5cad6acfb045ccc1a5732a31dca9c",
+      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-node-24.5.0-e3a6c25fac33/NodeRuntime.tar.gz",
       "capabilities": {
         "node.fetch": {
           "summary": "iOS-compatible global fetch path.",
           "title": "Node fetch"
         },
         "node.javascript": {
-          "summary": "Node.js 18 JavaScript runtime.",
+          "summary": "Node.js 24.5.0 JavaScript runtime.",
           "title": "Node.js JavaScript"
         },
         "node.native-addon": {
@@ -277,20 +277,21 @@
         }
       },
       "components": {
-        "corepack": "0.28.0",
+        "corepack": "0.34.0",
         "fetch": "minipass-fetch-global",
         "native_addons": "ios-arm64-napi",
-        "node": "18.20.4",
-        "node-gyp": "10.1.0",
-        "npm": "10.7.0",
-        "npx": "10.7.0",
+        "node": "24.5.0",
+        "node-gyp": "11.2.0",
+        "node-gyp-ios-compat": "ios-subprocess-xcode-make-shell-sdkroot-v2",
+        "npm": "11.5.1",
+        "npx": "11.5.1",
         "pnpm": "via-corepack",
         "yarn": "via-corepack"
       },
       "conflicts": [],
-      "corepack_version": "0.28.0",
+      "corepack_version": "0.34.0",
       "display_name": "Node.js",
-      "download_size": 20441948,
+      "download_size": 29495021,
       "group": "tools",
       "handler": "portable-v1",
       "install": {
@@ -306,7 +307,7 @@
         "probe": {
           "arguments": [
             "-e",
-            "const fs=require('fs');const p=require('./lib/node_modules/npm/package.json');const c=require('./lib/node_modules/corepack/package.json');if(p.version!=='10.7.0'||c.version!=='0.28.0')process.exit(43);console.log('codex-node-runtime-ok '+process.version+' npm='+p.version+' corepack='+c.version)"
+            "const p=require('./lib/node_modules/npm/package.json');const c=require('./lib/node_modules/corepack/package.json');if(p.version!=='11.5.1'||c.version!=='0.34.0')process.exit(43);console.log('codex-node-runtime-ok '+process.version+' npm='+p.version+' corepack='+c.version)"
           ],
           "contains": "codex-node-runtime-ok",
           "executable": "bin/node"
@@ -344,10 +345,10 @@
           "Frameworks/NodeMobile.framework/NodeMobile"
         ]
       },
-      "metadata_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-node-18.20.4-f38613c172c3/NodeRuntime.bundle.json",
+      "metadata_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-node-24.5.0-e3a6c25fac33/NodeRuntime.bundle.json",
       "minimum_ios": "15.0",
-      "node_version": "18.20.4",
-      "npm_version": "10.7.0",
+      "node_version": "24.5.0",
+      "npm_version": "11.5.1",
       "optional": true,
       "order": 15,
       "provides": [
@@ -365,23 +366,23 @@
         }
       ],
       "requires": [],
-      "revision": "f38613c172c33e4ed56d4cf61640c8f20fb9cfcb4d06de477187c753d0b6a1b6",
+      "revision": "e3a6c25fac33686fb1b7e61f522204cb19b71f4fc29f627de99738cafaae3c95",
       "runtime_format": 1,
-      "source_revision": "d9552e0e01ed5bdbe12a31d1ce6c0877a4f39580",
-      "summary": "完整 Node.js/npm 开发环境：npm、npx、Corepack、pnpm、Yarn、纯 JS global fetch、child_process 与 iOS arm64 node-gyp/N-API，并支持持久化全局 CLI。",
+      "source_revision": "4608d3c670cf37b383dbe631de4992cf23da46e0",
+      "summary": "Node.js 24.5.0 / npm 11.5.1，含 Corepack、纯 JS fetch、iOS arm64 N-API 与 node-gyp 支持。",
       "ui": {
         "symbol": "shippingbox.circle.fill",
         "tint": "green"
       },
-      "unpacked_size": 83948544,
-      "version": "runtime-node-18.20.4-f38613c172c3"
+      "unpacked_size": 115860806,
+      "version": "runtime-node-24.5.0-e3a6c25fac33"
     },
     "ollvm": {
-      "archive_sha256": "db77403a4290caec4d377d7880ceda5d32b32d7eeaad7b528493ea50214be33d",
-      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.tar.gz",
+      "archive_sha256": "31667a83685e975dfdcd16578a0a386b7b9acc8e5f519b27f6e5d32fdee096b6",
+      "archive_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-ollvm-23.1.1-e54f2878240e/OLLVMRuntime.tar.gz",
       "capabilities": {
         "compiler.ollvm.frontend": {
-          "summary": "Arkari LLVM 16 clang/clang++ frontend.",
+          "summary": "Arkari LLVM 23.1.1 clang/clang++ frontend.",
           "title": "OLLVM frontend"
         },
         "compiler.ollvm.ios-artifact": {
@@ -396,19 +397,19 @@
           "title": "OLLVM iOS artifact build"
         },
         "compiler.ollvm.obfuscation": {
-          "summary": "Indirect branch/call/global, string encryption and control-flow protection passes.",
+          "summary": "Device-validated C-string, integer and floating-constant encryption plus control-flow flattening.",
           "title": "OLLVM protection passes"
         }
       },
       "conflicts": [],
       "display_name": "OLLVM",
-      "download_size": 27615397,
+      "download_size": 36348135,
       "group": "tools",
       "handler": "portable-v1",
       "install": {
         "environment": {
           "CA_TOOL_OLLVM_CLANG": "${RUNTIME_ROOT}/bin/clang",
-          "CA_TOOL_OLLVM_RESOURCE_DIR": "${RUNTIME_ROOT}/lib/clang/16",
+          "CA_TOOL_OLLVM_RESOURCE_DIR": "${RUNTIME_ROOT}/lib/clang/23",
           "CA_TOOL_OLLVM_ROOT": "${RUNTIME_ROOT}"
         },
         "path_entries": [],
@@ -422,7 +423,7 @@
         "required_paths": [
           "bin/clang",
           "bin/clang++",
-          "lib/clang/16/include",
+          "lib/clang/23/include",
           "OLLVMRuntime.bundle.json",
           "share/ollvm/device-smoke.sh"
         ],
@@ -430,11 +431,23 @@
           "bin/clang"
         ]
       },
-      "llvm_version": "16.0.6",
-      "metadata_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-ollvm-16.0.6-73e1f37b55e6/OLLVMRuntime.bundle.json",
+      "llvm_version": "23.1.1",
+      "metadata_url": "https://github.com/JiuJiuyu77/MinisApp-Runtime/releases/download/runtime-ollvm-23.1.1-e54f2878240e/OLLVMRuntime.bundle.json",
       "minimum_ios": "15.0",
       "optional": true,
       "order": 30,
+      "arm64e_compatibility_status": "validated",
+      "arm64e_compatible_passes": [
+        "cse",
+        "cie",
+        "cfe",
+        "fla"
+      ],
+      "target_architectures": [
+        "arm64",
+        "arm64e"
+      ],
+      "pac_aware_indirect_passes": false,
       "passes": [
         {
           "flags": [
@@ -481,10 +494,30 @@
             "-mllvm",
             "-irobf",
             "-mllvm",
-            "--irobf-cff"
+            "--irobf-fla"
           ],
-          "id": "cff",
+          "id": "fla",
           "title": "Control Flow Flattening"
+        },
+        {
+          "flags": [
+            "-mllvm",
+            "-irobf",
+            "-mllvm",
+            "--irobf-cie"
+          ],
+          "id": "cie",
+          "title": "Integer Constant Encryption"
+        },
+        {
+          "flags": [
+            "-mllvm",
+            "-irobf",
+            "-mllvm",
+            "--irobf-cfe"
+          ],
+          "id": "cfe",
+          "title": "Floating Constant Encryption"
         }
       ],
       "provides": [
@@ -494,13 +527,33 @@
       ],
       "recommended_presets": [
         {
+          "id": "strong",
+          "passes": [
+            "cse",
+            "cie",
+            "cfe",
+            "fla"
+          ],
+          "status": "device-validated",
+          "title": "强力混淆（推荐）"
+        },
+        {
           "id": "balanced",
           "passes": [
-            "indbr",
+            "cse",
+            "cie",
+            "cfe"
+          ],
+          "status": "device-validated",
+          "title": "推荐混淆"
+        },
+        {
+          "id": "basic",
+          "passes": [
             "cse"
           ],
-          "status": "needs-device-validation",
-          "title": "Balanced"
+          "status": "device-validated",
+          "title": "基础混淆"
         }
       ],
       "recommends": [
@@ -511,17 +564,17 @@
         }
       ],
       "requires": [],
-      "revision": "73e1f37b55e6f59ead79acaa17235dc7304338b5a0cce129e7ba483fda5991e3",
+      "revision": "e54f2878240e8cdc9122450b9c2afd6800fbd64bca05712d512a3fb02a11e958",
       "runtime_format": 1,
-      "source_revision": "1d0430f7d8bbce56c5fc1e96d7ccb3d94e70b97e",
-      "summary": "Arkari LLVM 16 编译器运行环境，提供多种编译期保护选项。",
+      "source_revision": "53a91b011707a645768c13e160095566d426a8d2",
+      "summary": "Arkari LLVM 23.1.1；arm64/arm64e 验证支持字符串、整数、浮点常量加密与控制流扁平化。",
       "ui": {
         "symbol": "shield.lefthalf.filled",
         "tint": "purple"
       },
-      "unpacked_size": 92179074,
-      "validation_status": "needs-device-validation",
-      "version": "runtime-ollvm-16.0.6-73e1f37b55e6"
+      "unpacked_size": 117963468,
+      "validation_status": "device-validated",
+      "version": "runtime-ollvm-23.1.1-e54f2878240e"
     },
     "python": {
       "archive_sha256": "6c5cd14ad7354cef321ab666c984f5f036317197e63f88589f24d3a705e2996c",
