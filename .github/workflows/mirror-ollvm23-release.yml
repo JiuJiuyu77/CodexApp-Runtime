@@ -1,0 +1,183 @@
+name: Mirror Arkari OLLVM 23.1.1 Runtime
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Runtime/runtime-manifest.json"
+      - ".github/workflows/mirror-ollvm23-release.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mirror-ollvm23-release
+  cancel-in-progress: false
+
+env:
+  SOURCE_REPO: susu123oss/CodexApp-Runtime
+  SOURCE_TAG: runtime-ollvm-23.1.1-e54f2878240e
+  TARGET_TAG: runtime-ollvm-23.1.1-e54f2878240e
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download upstream release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p runtime-assets
+          gh release download "$SOURCE_TAG" \
+            --repo "$SOURCE_REPO" \
+            --pattern OLLVMRuntime.tar.gz \
+            --pattern OLLVMRuntime.bundle.json \
+            --dir runtime-assets
+          test -s runtime-assets/OLLVMRuntime.tar.gz
+          test -s runtime-assets/OLLVMRuntime.bundle.json
+
+      - name: Verify upstream bundle and archive against manifest
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path("runtime-assets")
+          bundle_path = root / "OLLVMRuntime.bundle.json"
+          bundle = json.loads(bundle_path.read_text())
+          manifest = json.loads(Path("Runtime/runtime-manifest.json").read_text())
+          runtime = manifest["runtimes"]["ollvm"]
+          archive = root / "OLLVMRuntime.tar.gz"
+          digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+          bundle_digest = hashlib.sha256(bundle_path.read_bytes()).hexdigest()
+
+          assert bundle["runtime_id"] == "ollvm"
+          assert bundle["llvm_version"] == "23.1.1"
+          assert bundle_digest == "c70bb7eda8ef9540f28a00f063706676dfcc125573bd578a7b318b0e947f48fb"
+          assert bundle["revision"] == "e54f2878240e8cdc9122450b9c2afd6800fbd64bca05712d512a3fb02a11e958"
+          assert bundle["archive_sha256"] == digest
+          assert bundle["archive_bytes"] == archive.stat().st_size == 36348135
+          assert bundle["status"] == "device-validated"
+          assert bundle["target_architectures"] == ["arm64", "arm64e"]
+          assert set(bundle["supported_passes"]) == {"cse", "cie", "cfe", "fla"}
+
+          if runtime.get("version") == "runtime-ollvm-23.1.1-e54f2878240e":
+              assert runtime["revision"] == bundle["revision"]
+              assert runtime["source_revision"] == bundle["source_revision"]
+              assert runtime["archive_sha256"] == digest
+              assert runtime["download_size"] == archive.stat().st_size
+              assert runtime["install"] == bundle["install"]
+              assert runtime["llvm_version"] == bundle["llvm_version"]
+              assert runtime["arm64e_compatible_passes"] == bundle["arm64e_compatible_passes"]
+              assert runtime["target_architectures"] == bundle["target_architectures"]
+              assert set(runtime["arm64e_compatible_passes"]) == set(bundle["supported_passes"])
+              assert runtime["archive_url"].endswith(
+                  "/runtime-ollvm-23.1.1-e54f2878240e/OLLVMRuntime.tar.gz"
+              )
+              assert runtime["metadata_url"].endswith(
+                  "/runtime-ollvm-23.1.1-e54f2878240e/OLLVMRuntime.bundle.json"
+              )
+              assert {item["id"] for item in runtime["passes"]} == {
+                  item["id"] for item in bundle["passes"]
+              }
+              assert runtime["passes"] == bundle["passes"]
+              assert runtime["recommended_presets"] == bundle["recommended_presets"]
+          else:
+              print("manifest migration not published yet; retaining old releases")
+          print(f"verified Arkari LLVM {bundle['llvm_version']}")
+          print(f"sha256={digest} bytes={archive.stat().st_size}")
+          PY
+
+      - name: Create or refresh mirrored release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TARGET_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "Arkari OLLVM 23.1.1 Runtime" \
+              --notes "Verified mirror of the upstream Arkari LLVM 23.1.1 runtime. The bundle and archive are validated before upload."
+          fi
+          gh release upload "$TARGET_TAG" runtime-assets/OLLVMRuntime.tar.gz \
+            runtime-assets/OLLVMRuntime.bundle.json \
+            --repo "$GITHUB_REPOSITORY" --clobber
+
+      - name: Verify published assets before cleanup
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" \
+            --json assets > published-release.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          release = json.loads(Path("published-release.json").read_text())
+          assets = {item["name"]: item["size"] for item in release["assets"]}
+          expected = {
+              "OLLVMRuntime.bundle.json": 3244,
+              "OLLVMRuntime.tar.gz": 36348135,
+          }
+          assert assets == expected, f"unexpected published assets: {assets}"
+          PY
+          mkdir -p published-assets
+          gh release download "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" \
+            --pattern OLLVMRuntime.tar.gz \
+            --pattern OLLVMRuntime.bundle.json \
+            --dir published-assets
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path("published-assets")
+          bundle_path = root / "OLLVMRuntime.bundle.json"
+          bundle = json.loads(bundle_path.read_text())
+          archive = root / "OLLVMRuntime.tar.gz"
+          digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+          bundle_digest = hashlib.sha256(bundle_path.read_bytes()).hexdigest()
+          assert bundle_digest == "c70bb7eda8ef9540f28a00f063706676dfcc125573bd578a7b318b0e947f48fb"
+          assert digest == "31667a83685e975dfdcd16578a0a386b7b9acc8e5f519b27f6e5d32fdee096b6"
+          assert digest == bundle["archive_sha256"]
+          assert archive.stat().st_size == 36348135
+          PY
+
+      - name: Remove superseded OLLVM 16 releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          runtime = json.loads(Path("Runtime/runtime-manifest.json").read_text())["runtimes"]["ollvm"]
+          assert runtime.get("version") == "runtime-ollvm-23.1.1-e54f2878240e"
+          assert runtime.get("archive_sha256") == "31667a83685e975dfdcd16578a0a386b7b9acc8e5f519b27f6e5d32fdee096b6"
+          assert runtime.get("download_size") == 36348135
+          PY
+          then
+            echo "Manifest still references the prior OLLVM runtime; preserving OLLVM 16 releases."
+            exit 0
+          fi
+          gh release list --repo "$GITHUB_REPOSITORY" --limit 100 \
+            --json tagName --jq '.[].tagName' > /tmp/release-tags.txt
+          while IFS= read -r tag; do
+            case "$tag" in
+              runtime-ollvm-16.*)
+                echo "Deleting superseded OLLVM release and tag: $tag"
+                gh release delete "$tag" --repo "$GITHUB_REPOSITORY" \
+                  --cleanup-tag --yes
+                ;;
+            esac
+          done < /tmp/release-tags.txt

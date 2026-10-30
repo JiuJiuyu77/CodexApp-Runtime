@@ -1,0 +1,168 @@
+name: Mirror Node.js 24.5.0 Runtime
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Runtime/runtime-manifest.json"
+      - ".github/workflows/mirror-node24-release.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mirror-node24-release
+  cancel-in-progress: false
+
+env:
+  SOURCE_REPO: susu123oss/CodexApp-Runtime
+  SOURCE_TAG: runtime-node-24.5.0-e3a6c25fac33
+  TARGET_TAG: runtime-node-24.5.0-e3a6c25fac33
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download upstream release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p runtime-assets
+          gh release download "$SOURCE_TAG" \
+            --repo "$SOURCE_REPO" \
+            --pattern NodeRuntime.tar.gz \
+            --pattern NodeRuntime.bundle.json \
+            --dir runtime-assets
+          test -s runtime-assets/NodeRuntime.tar.gz
+          test -s runtime-assets/NodeRuntime.bundle.json
+
+      - name: Verify upstream bundle and archive
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path("runtime-assets")
+          bundle_path = root / "NodeRuntime.bundle.json"
+          bundle = json.loads(bundle_path.read_text())
+          manifest = json.loads(Path("Runtime/runtime-manifest.json").read_text())
+          runtime = manifest["runtimes"]["node"]
+          archive = root / "NodeRuntime.tar.gz"
+          digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+          bundle_digest = hashlib.sha256(bundle_path.read_bytes()).hexdigest()
+          assert bundle["runtime_id"] == "node", bundle.get("runtime_id")
+          assert bundle["node_version"] == "24.5.0", bundle.get("node_version")
+          assert bundle["npm_version"] == "11.5.1", bundle.get("npm_version")
+          assert bundle_digest == "c8061b7b8643381043e71fa2a0f3a3f18372d376d820ffd651b71d19c22346a9"
+          assert digest == bundle["archive_sha256"], (digest, bundle["archive_sha256"])
+          assert archive.stat().st_size == bundle["archive_bytes"]
+          if runtime.get("version") == "runtime-node-24.5.0-e3a6c25fac33":
+              assert runtime["revision"] == bundle["revision"]
+              assert runtime["archive_sha256"] == digest
+              assert runtime["download_size"] == archive.stat().st_size
+              assert runtime["install"] == bundle["install"]
+              assert runtime["archive_url"].endswith(
+                  "/runtime-node-24.5.0-e3a6c25fac33/NodeRuntime.tar.gz"
+              )
+              assert runtime["metadata_url"].endswith(
+                  "/runtime-node-24.5.0-e3a6c25fac33/NodeRuntime.bundle.json"
+              )
+          else:
+              print("manifest migration not published yet; retaining old releases")
+          print(f"verified Node {bundle['node_version']} / npm {bundle['npm_version']}")
+          print(f"sha256={digest} bytes={archive.stat().st_size}")
+          PY
+
+      - name: Create or refresh mirrored release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TARGET_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "Node.js 24.5.0 Runtime" \
+              --notes "Byte-for-byte mirror of the upstream CodexApp-Runtime Node.js 24.5.0 release. SHA-256 is verified before upload."
+          fi
+          gh release upload "$TARGET_TAG" runtime-assets/NodeRuntime.tar.gz \
+            runtime-assets/NodeRuntime.bundle.json \
+            --repo "$GITHUB_REPOSITORY" --clobber
+
+      - name: Verify published assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" \
+            --json assets > published-release.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          release = json.loads(Path("published-release.json").read_text())
+          assets = {item["name"]: item["size"] for item in release["assets"]}
+          expected = {
+              "NodeRuntime.bundle.json": 2512,
+              "NodeRuntime.tar.gz": 29495021,
+          }
+          assert assets == expected, f"unexpected published assets: {assets}"
+          PY
+          mkdir -p published-assets
+          gh release download "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" \
+            --pattern NodeRuntime.tar.gz \
+            --pattern NodeRuntime.bundle.json \
+            --dir published-assets
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path("published-assets")
+          bundle_path = root / "NodeRuntime.bundle.json"
+          bundle = json.loads(bundle_path.read_text())
+          archive = root / "NodeRuntime.tar.gz"
+          digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+          bundle_digest = hashlib.sha256(bundle_path.read_bytes()).hexdigest()
+          assert bundle_digest == "c8061b7b8643381043e71fa2a0f3a3f18372d376d820ffd651b71d19c22346a9"
+          assert digest == "267278d0baafac4ba2ba4a0afee65f213bb5cad6acfb045ccc1a5732a31dca9c"
+          assert digest == bundle["archive_sha256"]
+          assert archive.stat().st_size == 29495021
+          PY
+
+      - name: Remove superseded Node.js 18 releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          runtime = json.loads(Path("Runtime/runtime-manifest.json").read_text())["runtimes"]["node"]
+          assert runtime.get("version") == "runtime-node-24.5.0-e3a6c25fac33"
+          assert runtime.get("archive_sha256") == "267278d0baafac4ba2ba4a0afee65f213bb5cad6acfb045ccc1a5732a31dca9c"
+          assert runtime.get("download_size") == 29495021
+          PY
+          then
+            echo "Manifest still references the prior Node runtime; preserving Node.js 18 releases."
+            exit 0
+          fi
+          gh release list --repo "$GITHUB_REPOSITORY" --limit 100 \
+            --json tagName --jq '.[].tagName' > /tmp/release-tags.txt
+          while IFS= read -r tag; do
+            case "$tag" in
+              runtime-node-18.*)
+                echo "Deleting superseded Node.js release and tag: $tag"
+                gh release delete "$tag" --repo "$GITHUB_REPOSITORY" \
+                  --cleanup-tag --yes
+                ;;
+            esac
+          done < /tmp/release-tags.txt
