@@ -801,6 +801,7 @@
           "usr/lib/llvm-16/bin/clang++"
         ],
         "sign_paths_without_entitlements": [
+          "usr/lib/libiosexec.1.dylib",
           "usr/lib/llvm-16/bin/clang",
           "usr/lib/llvm-16/bin/clang++"
         ]
